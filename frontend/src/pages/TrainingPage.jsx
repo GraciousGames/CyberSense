@@ -1,16 +1,93 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { getScenarios } from "../services/scenarioService.js";
 
 import EmailPreview from "../components/EmailPreview.jsx";
 import CluePanel from "../components/CluePanel.jsx";
-import scenarios from "../data/scenarios.js";
 
 import "../styles/training.css";
 
 function TrainingPage() {
+  const [scenarios, setScenarios] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState("");
+
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState("");
   const [score, setScore] = useState(0);
   const [isFinished, setIsFinished] = useState(false);
+
+  useEffect(() => {
+    async function loadScenarios() {
+      try {
+        setIsLoading(true);
+        setLoadError("");
+
+        const loadedScenarios = await getScenarios();
+
+        if (!Array.isArray(loadedScenarios)) {
+          throw new Error(
+            "Das Backend hat keine gültige Szenarienliste zurückgegeben."
+          );
+        }
+
+        setScenarios(loadedScenarios);
+      } catch (error) {
+        setLoadError(
+          error instanceof Error
+            ? error.message
+            : "Die Szenarien konnten nicht geladen werden."
+        );
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    loadScenarios();
+  }, []);
+
+  if (isLoading) {
+    return (
+      <main className="container training-page py-5">
+        <section className="training-status-card">
+          <div
+            className="spinner-border text-primary"
+            role="status"
+            aria-label="Szenarien werden geladen"
+          />
+
+          <p className="mb-0">
+            Trainingsszenarien werden geladen …
+          </p>
+        </section>
+      </main>
+    );
+  }
+
+  if (loadError) {
+    return (
+      <main className="container training-page py-5">
+        <div className="alert alert-danger" role="alert">
+          <h1 className="h4">
+            Training konnte nicht geladen werden
+          </h1>
+
+          <p className="mb-0">
+            {loadError}
+          </p>
+        </div>
+      </main>
+    );
+  }
+
+  if (scenarios.length === 0) {
+    return (
+      <main className="container training-page py-5">
+        <div className="alert alert-warning" role="alert">
+          Es sind derzeit keine Trainingsszenarien vorhanden.
+        </div>
+      </main>
+    );
+  }
 
   const currentScenario = scenarios[currentIndex];
   const isAnswered = selectedAnswer !== "";
@@ -52,6 +129,10 @@ function TrainingPage() {
   }
 
   if (isFinished) {
+    const percentage = Math.round(
+      (score / scenarios.length) * 100
+    );
+
     return (
       <main className="container training-page py-5">
         <section className="training-result">
@@ -66,9 +147,7 @@ function TrainingPage() {
           </p>
 
           <p className="text-secondary">
-            Du hast{" "}
-            {Math.round((score / scenarios.length) * 100)} %
-            der Szenarien richtig bewertet.
+            Du hast {percentage} % der Szenarien richtig bewertet.
           </p>
 
           <button
@@ -101,7 +180,10 @@ function TrainingPage() {
         </div>
 
         <div className="score-display">
-          <span className="score-label">Punkte</span>
+          <span className="score-label">
+            Punkte
+          </span>
+
           <strong>{score}</strong>
         </div>
       </header>
@@ -137,11 +219,19 @@ function TrainingPage() {
               type="button"
               onClick={() => handleAnswer("legitim")}
             >
-              <span className="answer-icon">✓</span>
+              <span
+                className="answer-icon"
+                aria-hidden="true"
+              >
+                ✓
+              </span>
 
               <span>
                 <strong>Legitim</strong>
-                <small>Die Nachricht ist vertrauenswürdig</small>
+
+                <small>
+                  Die Nachricht ist vertrauenswürdig
+                </small>
               </span>
             </button>
 
@@ -150,11 +240,19 @@ function TrainingPage() {
               type="button"
               onClick={() => handleAnswer("suspicious")}
             >
-              <span className="answer-icon">?</span>
+              <span
+                className="answer-icon"
+                aria-hidden="true"
+              >
+                ?
+              </span>
 
               <span>
                 <strong>Verdächtig</strong>
-                <small>Die Nachricht sollte geprüft werden</small>
+
+                <small>
+                  Die Nachricht sollte geprüft werden
+                </small>
               </span>
             </button>
 
@@ -163,11 +261,19 @@ function TrainingPage() {
               type="button"
               onClick={() => handleAnswer("phishing")}
             >
-              <span className="answer-icon">!</span>
+              <span
+                className="answer-icon"
+                aria-hidden="true"
+              >
+                !
+              </span>
 
               <span>
                 <strong>Phishing</strong>
-                <small>Die Nachricht ist betrügerisch</small>
+
+                <small>
+                  Die Nachricht ist betrügerisch
+                </small>
               </span>
             </button>
           </div>
@@ -184,7 +290,10 @@ function TrainingPage() {
             }
             role="alert"
           >
-            <div className="feedback-icon" aria-hidden="true">
+            <div
+              className="feedback-icon"
+              aria-hidden="true"
+            >
               {answerIsCorrect ? "✓" : "×"}
             </div>
 
@@ -201,7 +310,9 @@ function TrainingPage() {
             </div>
           </div>
 
-          <CluePanel clues={currentScenario.clues} />
+          <CluePanel
+            clues={currentScenario.clues ?? []}
+          />
 
           <div className="next-button-wrapper">
             <button
