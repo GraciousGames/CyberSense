@@ -37,126 +37,140 @@ function RegisterPage() {
       return;
     }
 
-    console.log("Registrierungsdaten:", formData);
-
     setSuccess(
       "Die Registrierung wurde testweise erfolgreich verarbeitet."
     );
+
+    setFormData({
+      username: "",
+      email: "",
+      password: "",
+      passwordConfirmation: ""
+    });
   }
 
   return (
-    <main className="container py-5">
-      <div className="row justify-content-center">
-        <div className="col-md-7 col-lg-5">
-          <h1>Registrieren</h1>
-
-          <p className="text-secondary">
-            Erstelle ein Benutzerkonto für CyberSense.
-          </p>
-
-          {error && (
-            <div className="alert alert-danger" role="alert">
-              {error}
-            </div>
-          )}
-
-          {success && (
-            <div className="alert alert-success" role="alert">
-              {success}
-            </div>
-          )}
-
-          <form className="mt-4" onSubmit={handleSubmit}>
-            <div className="mb-3">
-              <label className="form-label" htmlFor="username">
-                Benutzername
-              </label>
-
-              <input
-                className="form-control"
-                id="username"
-                name="username"
-                type="text"
-                value={formData.username}
-                onChange={handleChange}
-                autoComplete="username"
-                required
-              />
-            </div>
-
-            <div className="mb-3">
-              <label className="form-label" htmlFor="email">
-                E-Mail-Adresse
-              </label>
-
-              <input
-                className="form-control"
-                id="email"
-                name="email"
-                type="email"
-                value={formData.email}
-                onChange={handleChange}
-                autoComplete="email"
-                required
-              />
-            </div>
-
-            <div className="mb-3">
-              <label className="form-label" htmlFor="password">
-                Passwort
-              </label>
-
-              <input
-                className="form-control"
-                id="password"
-                name="password"
-                type="password"
-                value={formData.password}
-                onChange={handleChange}
-                autoComplete="new-password"
-                minLength={8}
-                required
-              />
-
-              <div className="form-text">
-                Mindestens 8 Zeichen.
-              </div>
-            </div>
-
-            <div className="mb-4">
-              <label
-                className="form-label"
-                htmlFor="passwordConfirmation"
-              >
-                Passwort wiederholen
-              </label>
-
-              <input
-                className="form-control"
-                id="passwordConfirmation"
-                name="passwordConfirmation"
-                type="password"
-                value={formData.passwordConfirmation}
-                onChange={handleChange}
-                autoComplete="new-password"
-                minLength={8}
-                required
-              />
-            </div>
-
-            <button className="btn btn-primary w-100" type="submit">
-              Registrieren
-            </button>
-          </form>
-
-          <p className="text-center mt-4">
-            Bereits registriert?{" "}
-            <Link to="/login">
-              Zur Anmeldung
-            </Link>
-          </p>
+    <main className="auth-page">
+      <section className="auth-card">
+        <div className="auth-icon" aria-hidden="true">
+          +
         </div>
-      </div>
+
+        <h1 className="auth-title">Konto erstellen</h1>
+
+        <p className="auth-description">
+          Registriere dich, um Fortschritte und Ergebnisse zu speichern.
+        </p>
+
+        {error && (
+          <div className="alert alert-danger" role="alert">
+            {error}
+          </div>
+        )}
+
+        {success && (
+          <div className="alert alert-success" role="alert">
+            {success}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit}>
+          <div className="mb-3">
+            <label className="form-label" htmlFor="username">
+              Benutzername
+            </label>
+
+            <input
+              className="form-control"
+              id="username"
+              name="username"
+              type="text"
+              value={formData.username}
+              onChange={handleChange}
+              autoComplete="username"
+              placeholder="Benutzername"
+              required
+            />
+          </div>
+
+          <div className="mb-3">
+            <label className="form-label" htmlFor="email">
+              E-Mail-Adresse
+            </label>
+
+            <input
+              className="form-control"
+              id="email"
+              name="email"
+              type="email"
+              value={formData.email}
+              onChange={handleChange}
+              autoComplete="email"
+              placeholder="name@example.com"
+              required
+            />
+          </div>
+
+          <div className="mb-3">
+            <label className="form-label" htmlFor="password">
+              Passwort
+            </label>
+
+            <input
+              className="form-control"
+              id="password"
+              name="password"
+              type="password"
+              value={formData.password}
+              onChange={handleChange}
+              autoComplete="new-password"
+              minLength={8}
+              placeholder="Mindestens 8 Zeichen"
+              required
+            />
+
+            <div className="form-text">
+              Das Passwort muss mindestens 8 Zeichen lang sein.
+            </div>
+          </div>
+
+          <div className="mb-4">
+            <label
+              className="form-label"
+              htmlFor="passwordConfirmation"
+            >
+              Passwort wiederholen
+            </label>
+
+            <input
+              className="form-control"
+              id="passwordConfirmation"
+              name="passwordConfirmation"
+              type="password"
+              value={formData.passwordConfirmation}
+              onChange={handleChange}
+              autoComplete="new-password"
+              minLength={8}
+              placeholder="Passwort wiederholen"
+              required
+            />
+          </div>
+
+          <button
+            className="btn btn-primary btn-lg w-100"
+            type="submit"
+          >
+            Konto erstellen
+          </button>
+        </form>
+
+        <p className="auth-footer">
+          Bereits registriert?{" "}
+          <Link to="/login">
+            Zur Anmeldung
+          </Link>
+        </p>
+      </section>
     </main>
   );
 }
