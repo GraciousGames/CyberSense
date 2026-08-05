@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 function LoginPage() {
   function handleSubmit(event) {
     event.preventDefault();
@@ -43,11 +45,18 @@ function LoginPage() {
             <button className="btn btn-primary w-100" type="submit">
               Anmelden
             </button>
+            <p className="text-center mt-4">
+              Noch kein Benutzerkonto?{" "}
+              <Link to="/register">
+                Jetzt registrieren
+              </Link>
+            </p>
           </form>
         </div>
       </div>
     </main>
   );
+
 }
 
 export default LoginPage;
