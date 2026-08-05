@@ -40,6 +40,10 @@ function Navbar() {
             <NavLink className={getLinkClass} to="/login">
               Login
             </NavLink>
+
+            <NavLink className={getLinkClass} to="/register">
+              Registrieren
+            </NavLink>
           </div>
         </div>
       </div>
