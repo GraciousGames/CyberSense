@@ -10,13 +10,17 @@ function Navbar() {
   return (
     <nav className="navbar navbar-expand-lg app-navbar sticky-top">
       <div className="container">
-        <NavLink className="navbar-brand app-brand" to="/">
-          <span className="brand-icon" aria-hidden="true">
-            CS
-          </span>
+      <NavLink className="app-brand" to="/">
+          <img
+              src="/CyberSenseLogo.png"
+              alt="CyberSense Logo"
+              className="brand-logo"
+          />
 
-          <span>CyberSense</span>
-        </NavLink>
+          <span className="brand-name">
+              CyberSense
+          </span>
+      </NavLink>
 
         <button
           className="navbar-toggler"
@@ -50,6 +54,10 @@ function Navbar() {
             <NavLink
               className={getLinkClass} to="/register">
               Registrieren
+            </NavLink>
+
+            <NavLink className={getLinkClass} to="/admin">
+              Administration
             </NavLink>
           </div>
         </div>
