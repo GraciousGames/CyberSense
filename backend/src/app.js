@@ -1,10 +1,21 @@
 import express from "express";
 import cors from "cors";
 
+import {
+  initDatabase
+} from "./database/initDatabase.js";
+
+import {
+  seedDatabase
+} from "./database/seedDatabase.js";
+
 import scenarioRoutes from "./routes/scenarioRoutes.js";
 
 const app = express();
 const port = 3000;
+
+initDatabase();
+seedDatabase();
 
 app.use(
   cors({
@@ -30,5 +41,7 @@ app.use((request, response) => {
 });
 
 app.listen(port, () => {
-  console.log(`Backend läuft auf http://localhost:${port}`);
+  console.log(
+    `Backend läuft auf http://localhost:${port}`
+  );
 });
