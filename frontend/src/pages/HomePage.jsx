@@ -6,7 +6,6 @@ function HomePage() {
       <section className="hero-section">
         <div className="hero-background-shape hero-shape-one" />
         <div className="hero-background-shape hero-shape-two" />
-
         <div className="hero-content">
           <div className="hero-copy">
             <span className="hero-badge">

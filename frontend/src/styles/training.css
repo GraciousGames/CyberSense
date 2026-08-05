@@ -1,101 +1,161 @@
+/* =====================================================================
+   1. TRAININGSSEITE
+   Breite und allgemeine Struktur
+   ===================================================================== */
+
 .training-page {
-  max-width: 1050px;
+  width: min(1050px, calc(100% - 2rem));
+  margin: 0 auto;
+  padding: 3rem 0;
 }
+
+
+/* =====================================================================
+   2. TRAININGSKOPF
+   Überschrift, Fortschritt und Punktestand
+   ===================================================================== */
 
 .training-header {
   display: flex;
+  margin-bottom: 1.25rem;
+
+  gap: 2rem;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 2rem;
-  margin-bottom: 1.25rem;
 }
 
 .training-overline {
   display: block;
-  margin-bottom: 0.4rem;
-  color: #4969ed;
+  margin-bottom: 0.45rem;
+
+  color: #a78bfa;
+
   font-size: 0.8rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
+  font-weight: 750;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
 }
 
 .training-title {
-  margin-bottom: 0.35rem;
-  font-size: clamp(1.8rem, 4vw, 2.7rem);
-  font-weight: 700;
+  margin-bottom: 0.4rem;
+
+  color: var(--color-text);
+
+  font-size: clamp(1.9rem, 4vw, 2.8rem);
+  font-weight: 760;
+  letter-spacing: -0.035em;
 }
 
 .score-display {
   display: flex;
-  min-width: 90px;
-  padding: 0.75rem 1rem;
+  min-width: 96px;
+  padding: 0.8rem 1rem;
+
   flex-direction: column;
   align-items: center;
-  background: #eef1ff;
-  border: 1px solid #d8defd;
-  border-radius: 12px;
+
+  background: var(--color-primary-light);
+  border: 1px solid rgba(139, 92, 246, 0.28);
+  border-radius: var(--radius-medium);
 }
 
 .score-display strong {
-  color: #334dcc;
-  font-size: 1.5rem;
+  color: #c4b0ff;
+
+  font-size: 1.55rem;
+  line-height: 1.2;
 }
 
 .score-label {
-  color: #667085;
+  color: var(--color-muted);
+
   font-size: 0.8rem;
 }
+
+
+/* =====================================================================
+   3. FORTSCHRITTSBALKEN
+   Fortschritt des Trainings
+   ===================================================================== */
 
 .training-progress {
   height: 8px;
   margin-bottom: 1.5rem;
-  background: #e8ebf0;
+
+  overflow: hidden;
+
+  background: #2d2938;
+  border-radius: 999px;
 }
 
 .training-progress .progress-bar {
-  background: #4969ed;
+  background: linear-gradient(
+    90deg,
+    var(--color-primary),
+    #b07cff
+  );
+
   border-radius: 999px;
+
   transition: width 300ms ease;
 }
 
+
+/* =====================================================================
+   4. E-MAIL-FENSTER
+   Darstellung einer realistischen Nachricht
+   ===================================================================== */
+
 .email-window {
   overflow: hidden;
-  background: #ffffff;
-  border: 1px solid #dfe3e8;
-  border-radius: 16px;
-  box-shadow:
-    0 15px 45px rgba(31, 45, 61, 0.08),
-    0 2px 6px rgba(31, 45, 61, 0.04);
+
+  color: var(--color-text);
+
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-large);
+  box-shadow: var(--shadow-medium);
 }
 
 .email-toolbar {
   display: flex;
   min-height: 58px;
   padding: 0.65rem 1rem;
+
   align-items: center;
   justify-content: space-between;
-  background: #f7f9fb;
-  border-bottom: 1px solid #e4e7eb;
+
+  background: var(--color-background-soft);
+  border-bottom: 1px solid var(--color-border);
 }
 
 .email-toolbar-actions {
   display: flex;
-  gap: 0.3rem;
+  gap: 0.35rem;
 }
 
 .email-toolbar-button,
 .email-icon-button {
   padding: 0.45rem 0.75rem;
-  color: #536071;
+
+  color: var(--color-muted);
   background: transparent;
-  border: 0;
-  border-radius: 7px;
+
+  border: 1px solid transparent;
+  border-radius: var(--radius-small);
+
+  transition:
+    color var(--transition-fast),
+    background-color var(--transition-fast),
+    border-color var(--transition-fast);
 }
 
 .email-toolbar-button:hover,
 .email-icon-button:hover {
-  background: #e9edf2;
+  color: var(--color-text);
+
+  background: var(--color-primary-light);
+  border-color: rgba(139, 92, 246, 0.22);
 }
 
 .email-content {
@@ -105,6 +165,7 @@
 .email-subject-row {
   display: flex;
   margin-bottom: 1.5rem;
+
   gap: 0.75rem;
   align-items: center;
   justify-content: space-between;
@@ -112,36 +173,63 @@
 
 .email-subject {
   margin: 0;
-  font-size: 1.4rem;
-  font-weight: 650;
+
+  color: var(--color-text);
+
+  font-size: 1.45rem;
+  font-weight: 680;
 }
 
 .email-label {
-  padding: 0.3rem 0.65rem;
-  color: #536071;
+  padding: 0.32rem 0.7rem;
+
+  color: #c5b0ff;
+
   font-size: 0.75rem;
-  background: #eef1f4;
+  font-weight: 650;
+
+  background: var(--color-primary-light);
+  border: 1px solid rgba(139, 92, 246, 0.22);
   border-radius: 999px;
 }
 
+
+/* =====================================================================
+   5. ABSENDERBEREICH
+   Avatar, Absenderadresse und Details
+   ===================================================================== */
+
 .email-sender {
   display: grid;
-  grid-template-columns: 48px minmax(0, 1fr) auto;
   padding-bottom: 1.25rem;
+
+  grid-template-columns: 48px minmax(0, 1fr) auto;
+
   gap: 0.85rem;
   align-items: start;
-  border-bottom: 1px solid #edf0f2;
+
+  border-bottom: 1px solid var(--color-border);
 }
 
 .email-avatar {
   display: grid;
   width: 48px;
   height: 48px;
-  color: white;
+
+  color: #ffffff;
+
   font-size: 1.15rem;
-  font-weight: 700;
-  background: linear-gradient(135deg, #4969ed, #7447d8);
+  font-weight: 750;
+
+  background: linear-gradient(
+    135deg,
+    var(--color-primary),
+    var(--color-primary-dark)
+  );
+
   border-radius: 50%;
+  box-shadow: 0 7px 18px rgba(109, 40, 217, 0.28);
+
   place-items: center;
 }
 
@@ -151,43 +239,60 @@
 
 .email-sender-button {
   padding: 0;
-  color: #202938;
+
+  color: var(--color-text);
   background: transparent;
+
   border: 0;
 }
 
 .email-sender-button:hover {
+  color: #c5b0ff;
   text-decoration: underline;
 }
 
 .email-address {
-  color: #667085;
+  color: var(--color-muted);
+
   font-size: 0.9rem;
   overflow-wrap: anywhere;
 }
 
 .email-date {
-  color: #667085;
+  color: var(--color-muted);
+
   font-size: 0.85rem;
   white-space: nowrap;
 }
 
 .email-details {
   margin-top: 0.75rem;
-  padding: 0.85rem;
-  color: #536071;
+  padding: 0.9rem;
+
+  color: var(--color-muted);
+
   font-size: 0.85rem;
   line-height: 1.7;
-  background: #f7f9fb;
-  border: 1px solid #e4e7eb;
-  border-radius: 8px;
+
+  background: var(--color-background-soft);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-small);
+
   animation: reveal 180ms ease-out;
 }
+
+
+/* =====================================================================
+   6. E-MAIL-INHALT
+   Nachrichtentext, Signatur und Aktionslink
+   ===================================================================== */
 
 .email-body {
   max-width: 760px;
   padding: 2rem 0.5rem 1rem;
-  color: #27303f;
+
+  color: var(--color-text-soft);
+
   line-height: 1.75;
 }
 
@@ -198,54 +303,75 @@
 .email-action-area {
   display: flex;
   margin: 1.8rem 0;
+
   flex-direction: column;
+  gap: 0.6rem;
   align-items: flex-start;
-  gap: 0.55rem;
 }
 
 .fake-email-button {
-  padding: 0.75rem 1.3rem;
-  color: white;
+  padding: 0.78rem 1.3rem;
+
+  color: #ffffff;
+
   font-weight: 650;
-  background: #1264a3;
+
+  background: linear-gradient(
+    135deg,
+    var(--color-primary),
+    var(--color-primary-dark)
+  );
+
   border: 0;
-  border-radius: 7px;
-  box-shadow: 0 3px 8px rgba(18, 100, 163, 0.22);
+  border-radius: 9px;
+
+  box-shadow: 0 8px 20px rgba(109, 40, 217, 0.26);
+
   transition:
-    transform 150ms ease,
-    box-shadow 150ms ease;
+    transform var(--transition-fast),
+    box-shadow var(--transition-fast);
 }
 
 .fake-email-button:hover,
 .fake-email-button:focus {
-  box-shadow: 0 6px 15px rgba(18, 100, 163, 0.27);
-  transform: translateY(-1px);
+  box-shadow: 0 12px 28px rgba(109, 40, 217, 0.36);
+  transform: translateY(-2px);
 }
 
 .link-target {
   max-height: 0;
-  padding: 0 0.65rem;
-  color: #344054;
+  padding: 0 0.7rem;
+
+  color: #d8caff;
+
   font-family: monospace;
   font-size: 0.82rem;
-  background: #f3f5f7;
-  border-radius: 5px;
+
+  background: var(--color-background-soft);
+  border: 1px solid transparent;
+  border-radius: var(--radius-small);
+
   opacity: 0;
   overflow: hidden;
+
   transition:
     max-height 180ms ease,
     padding 180ms ease,
-    opacity 180ms ease;
+    opacity 180ms ease,
+    border-color 180ms ease;
 }
 
 .link-target-visible {
-  max-height: 80px;
-  padding: 0.45rem 0.65rem;
+  max-height: 90px;
+  padding: 0.5rem 0.7rem;
+
+  border-color: var(--color-border);
+
   opacity: 1;
 }
 
 .displayed-url {
-  color: #667085;
+  color: var(--color-muted);
   overflow-wrap: anywhere;
 }
 
@@ -253,13 +379,29 @@
   margin-top: 2rem;
 }
 
+
+/* =====================================================================
+   7. VERDÄCHTIGE STELLEN
+   Markierung nach einer beantworteten Aufgabe
+   ===================================================================== */
+
 .suspicious-highlight {
   padding: 0.15rem 0.3rem;
-  background: #fff1c9;
-  border: 2px solid #efb22d;
-  border-radius: 5px;
-  animation: highlight 450ms ease-out;
+
+  color: #f5d99e;
+
+  background: var(--color-warning-light);
+  border: 2px solid var(--color-warning);
+  border-radius: 6px;
+
+  animation: highlight 420ms ease-out;
 }
+
+
+/* =====================================================================
+   8. ANTWORTMÖGLICHKEITEN
+   Legitim, verdächtig und Phishing
+   ===================================================================== */
 
 .answer-section {
   margin-top: 2rem;
@@ -268,29 +410,40 @@
 .answer-buttons {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
+
   gap: 1rem;
 }
 
 .answer-button {
   display: flex;
-  min-height: 105px;
+  min-width: 0;
+  min-height: 108px;
   padding: 1rem;
+
   gap: 0.9rem;
   align-items: center;
+
+  color: var(--color-text);
   text-align: left;
-  background: white;
-  border: 2px solid #dfe3e8;
-  border-radius: 13px;
+
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-medium);
+
+  box-shadow: var(--shadow-small);
+
   transition:
-    border-color 150ms ease,
-    box-shadow 150ms ease,
-    transform 150ms ease;
+    background-color var(--transition-fast),
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast),
+    transform var(--transition-fast);
 }
 
 .answer-button:hover,
-.answer-button:focus {
-  box-shadow: 0 7px 20px rgba(31, 45, 61, 0.1);
-  transform: translateY(-2px);
+.answer-button:focus-visible {
+  background: var(--color-surface-hover);
+  box-shadow: var(--shadow-medium);
+  transform: translateY(-3px);
 }
 
 .answer-button strong,
@@ -299,47 +452,60 @@
 }
 
 .answer-button small {
-  margin-top: 0.25rem;
-  color: #667085;
+  margin-top: 0.3rem;
+
+  color: var(--color-muted);
+
+  line-height: 1.4;
 }
 
 .answer-icon {
   display: grid;
-  width: 42px;
-  height: 42px;
+  width: 44px;
+  height: 44px;
+
   flex: 0 0 auto;
+
   font-size: 1.2rem;
-  font-weight: 700;
+  font-weight: 750;
+
   border-radius: 50%;
+
   place-items: center;
 }
 
 .answer-legitimate:hover {
-  border-color: #2f9e65;
+  border-color: var(--color-success);
 }
 
 .answer-legitimate .answer-icon {
-  color: #23764d;
-  background: #dff6ea;
+  color: #74d6ad;
+  background: var(--color-success-light);
 }
 
 .answer-suspicious:hover {
-  border-color: #dda314;
+  border-color: var(--color-warning);
 }
 
 .answer-suspicious .answer-icon {
-  color: #8a6410;
-  background: #fff3cd;
+  color: #efc66e;
+  background: var(--color-warning-light);
 }
 
 .answer-phishing:hover {
-  border-color: #dc4c64;
+  border-color: var(--color-danger);
 }
 
 .answer-phishing .answer-icon {
-  color: #a52c42;
-  background: #fde2e7;
+  color: #f291a2;
+  background: var(--color-danger-light);
 }
+
+
+/* =====================================================================
+   9. ANTWORT-FEEDBACK
+   Anzeige nach einer Auswahl
+   ===================================================================== */
 
 .answer-feedback {
   margin-top: 2rem;
@@ -348,121 +514,188 @@
 .feedback-card {
   display: flex;
   padding: 1.25rem;
+
   gap: 1rem;
   align-items: flex-start;
-  border-radius: 13px;
+
+  border-radius: var(--radius-medium);
+}
+
+.feedback-card h2 {
+  color: var(--color-text);
 }
 
 .feedback-correct {
-  background: #e6f7ee;
-  border: 1px solid #9dd9b9;
+  color: #c5eedc;
+
+  background: var(--color-success-light);
+  border: 1px solid rgba(54, 179, 126, 0.36);
 }
 
 .feedback-wrong {
-  background: #fdebed;
-  border: 1px solid #efb0ba;
+  color: #f7c1ca;
+
+  background: var(--color-danger-light);
+  border: 1px solid rgba(232, 93, 117, 0.36);
 }
 
 .feedback-icon {
   display: grid;
   width: 42px;
   height: 42px;
+
   flex: 0 0 auto;
-  color: white;
+
+  color: #ffffff;
+
   font-size: 1.35rem;
-  font-weight: 700;
-  background: #2f9e65;
+  font-weight: 750;
+
+  background: var(--color-success);
   border-radius: 50%;
+
   place-items: center;
 }
 
 .feedback-wrong .feedback-icon {
-  background: #c83f56;
+  background: var(--color-danger);
 }
 
+
+/* =====================================================================
+   10. HINWEISE
+   Aufklappbare Erklärungen nach der Antwort
+   ===================================================================== */
+
 .clue-panel {
+  margin-top: 1.5rem;
   overflow: hidden;
-  background: white;
-  border: 1px solid #dfe3e8;
-  border-radius: 13px;
+
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-medium);
+  box-shadow: var(--shadow-small);
 }
 
 .clue-panel-header {
   display: flex;
   padding: 1.2rem;
+
   gap: 1rem;
   align-items: center;
   justify-content: space-between;
-  background: #f8f9fb;
-  border-bottom: 1px solid #e4e7eb;
+
+  background: var(--color-background-soft);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.clue-panel-header h2 {
+  color: var(--color-text);
 }
 
 .clue-count {
-  padding: 0.35rem 0.7rem;
-  color: #3f54c9;
+  padding: 0.35rem 0.75rem;
+
+  color: #c5b0ff;
+
   font-size: 0.8rem;
   font-weight: 650;
   white-space: nowrap;
-  background: #e9edff;
+
+  background: var(--color-primary-light);
+  border: 1px solid rgba(139, 92, 246, 0.22);
   border-radius: 999px;
 }
 
 .clue-item + .clue-item {
-  border-top: 1px solid #edf0f2;
+  border-top: 1px solid var(--color-border);
 }
 
 .clue-button {
   display: grid;
   width: 100%;
   padding: 1rem 1.2rem;
+
   grid-template-columns: auto 1fr auto;
-  gap: 0.8rem;
+
+  gap: 0.85rem;
   align-items: center;
+
+  color: var(--color-text);
   text-align: left;
-  background: white;
+
+  background: var(--color-surface);
   border: 0;
+
+  transition:
+    color var(--transition-fast),
+    background-color var(--transition-fast);
 }
 
 .clue-button:hover {
-  background: #fafbfc;
+  color: #d5c5ff;
+  background: var(--color-surface-hover);
 }
 
 .clue-number {
   display: grid;
-  width: 30px;
-  height: 30px;
-  color: #3f54c9;
-  font-weight: 700;
-  background: #e9edff;
+  width: 31px;
+  height: 31px;
+
+  color: #c5b0ff;
+
+  font-weight: 750;
+
+  background: var(--color-primary-light);
   border-radius: 50%;
+
   place-items: center;
 }
 
 .clue-arrow {
+  color: var(--color-muted);
   font-size: 1.3rem;
 }
 
 .clue-description {
-  padding: 0 1.2rem 1.1rem 4rem;
-  color: #536071;
-  line-height: 1.6;
+  padding: 0 1.2rem 1.2rem 4.1rem;
+
+  color: var(--color-muted);
+
+  line-height: 1.65;
+
   animation: reveal 180ms ease-out;
 }
+
+
+/* =====================================================================
+   11. NÄCHSTE-AUFGABE-BUTTON
+   Ausrichtung unter dem Feedback
+   ===================================================================== */
 
 .next-button-wrapper {
   margin-top: 1.5rem;
   text-align: right;
 }
 
+
+/* =====================================================================
+   12. ERGEBNISSEITE
+   Abschlusskarte nach dem Training
+   ===================================================================== */
+
 .training-result {
   max-width: 600px;
   margin: 4rem auto;
   padding: 3rem;
+
+  color: var(--color-text);
   text-align: center;
-  background: white;
-  border: 1px solid #dfe3e8;
-  border-radius: 18px;
-  box-shadow: 0 15px 45px rgba(31, 45, 61, 0.08);
+
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-large);
+  box-shadow: var(--shadow-large);
 }
 
 .result-icon {
@@ -470,20 +703,61 @@
   width: 72px;
   height: 72px;
   margin: 0 auto 1.4rem;
-  color: white;
+
+  color: #ffffff;
+
   font-size: 2rem;
-  font-weight: 700;
-  background: #2f9e65;
+  font-weight: 750;
+
+  background: linear-gradient(
+    135deg,
+    var(--color-success),
+    #20895f
+  );
+
   border-radius: 50%;
+  box-shadow: 0 10px 28px rgba(54, 179, 126, 0.24);
+
   place-items: center;
 }
 
 .result-score {
   margin: 1.2rem 0 0.5rem;
-  color: #3444ad;
+
+  color: #c5b0ff;
+
   font-size: 1.8rem;
-  font-weight: 700;
+  font-weight: 750;
 }
+
+
+/* =====================================================================
+   13. LADEZUSTAND
+   Anzeige während Daten aus dem Backend geladen werden
+   ===================================================================== */
+
+.training-status-card {
+  display: flex;
+  min-height: 220px;
+  padding: 2rem;
+
+  gap: 1rem;
+  align-items: center;
+  justify-content: center;
+
+  color: var(--color-muted);
+
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-medium);
+  box-shadow: var(--shadow-small);
+}
+
+
+/* =====================================================================
+   14. ANIMATIONEN
+   Dezente Einblendungen
+   ===================================================================== */
 
 @keyframes reveal {
   from {
@@ -503,18 +777,30 @@
   }
 
   to {
-    background: #fff1c9;
+    background: var(--color-warning-light);
   }
 }
 
+
+/* =====================================================================
+   15. RESPONSIVES DESIGN
+   Anpassung der Trainingsseite für kleinere Displays
+   ===================================================================== */
+
 @media (max-width: 768px) {
+  .training-page {
+    width: min(100% - 1.25rem, 1050px);
+    padding: 2rem 0;
+  }
+
   .training-header {
     flex-direction: column;
   }
 
   .score-display {
     flex-direction: row;
-    gap: 0.5rem;
+
+    gap: 0.55rem;
   }
 
   .email-content {
@@ -553,10 +839,30 @@
   }
 
   .next-button-wrapper {
-    text-align: stretch;
+    text-align: left;
   }
 
   .next-button-wrapper .btn {
     width: 100%;
+  }
+
+  .training-result {
+    margin: 2rem auto;
+    padding: 2rem 1.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .email-toolbar-button {
+    padding: 0.4rem;
+    font-size: 0.82rem;
+  }
+
+  .email-body {
+    padding-inline: 0;
+  }
+
+  .feedback-card {
+    flex-direction: column;
   }
 }
