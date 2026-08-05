@@ -48,9 +48,7 @@ function Navbar() {
             </NavLink>
 
             <NavLink
-              className="btn btn-primary ms-lg-3 mt-2 mt-lg-0"
-              to="/register"
-            >
+              className={getLinkClass} to="/register">
               Registrieren
             </NavLink>
           </div>
