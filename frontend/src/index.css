@@ -1,3 +1,8 @@
+/* =====================================================================
+   1. DESIGN-VARIABLEN
+   Zentrale Farben, Schatten, Abstände und Rundungen
+   ===================================================================== */
+
 :root {
   font-family:
     Inter,
@@ -13,31 +18,63 @@
   font-synthesis: none;
   text-rendering: optimizeLegibility;
 
+  /* Hauptfarben */
   --color-primary: #4056d6;
   --color-primary-dark: #2f42bb;
   --color-primary-light: #e9edff;
 
-  --color-secondary: #6b7280;
+  /* Textfarben */
   --color-text: #172033;
   --color-muted: #667085;
 
+  /* Oberflächen */
   --color-background: #f4f7fb;
   --color-surface: #ffffff;
+  --color-surface-muted: #edf1f8;
   --color-border: #dfe4ea;
 
+  /* Statusfarben */
   --color-success: #23855b;
+  --color-success-dark: #196c48;
+  --color-success-light: #e4f6ee;
+
   --color-warning: #b7790d;
+  --color-warning-dark: #8f5a00;
+  --color-warning-light: #fff3d5;
+
   --color-danger: #c63850;
+  --color-danger-dark: #9f293d;
+  --color-danger-light: #fdebed;
 
-  --shadow-small: 0 3px 12px rgba(31, 45, 61, 0.06);
-  --shadow-medium: 0 12px 35px rgba(31, 45, 61, 0.09);
+  /* Schatten */
+  --shadow-small:
+    0 3px 12px rgba(31, 45, 61, 0.06);
 
+  --shadow-medium:
+    0 12px 35px rgba(31, 45, 61, 0.09);
+
+  --shadow-large:
+    0 24px 60px rgba(31, 45, 61, 0.14);
+
+  /* Rundungen */
   --radius-small: 8px;
   --radius-medium: 14px;
   --radius-large: 22px;
+
+  /* Übergänge */
+  --transition-fast: 150ms ease;
+  --transition-normal: 220ms ease;
 }
 
-* {
+
+/* =====================================================================
+   2. RESET UND GRUNDEINSTELLUNGEN
+   Einheitliches Verhalten für alle HTML-Elemente
+   ===================================================================== */
+
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
@@ -51,7 +88,9 @@ body {
   min-width: 320px;
   min-height: 100vh;
   margin: 0;
+
   color: var(--color-text);
+
   background:
     radial-gradient(
       circle at top right,
@@ -75,6 +114,8 @@ a {
 
 a {
   color: var(--color-primary);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
 }
 
 a:hover {
@@ -82,12 +123,19 @@ a:hover {
 }
 
 img {
+  display: block;
   max-width: 100%;
 }
 
 #root {
   min-height: 100vh;
 }
+
+
+/* =====================================================================
+   3. ALLGEMEINES SEITENLAYOUT
+   Grundstruktur, Seitenbreite und wiederverwendbare Container
+   ===================================================================== */
 
 .app-layout {
   display: flex;
@@ -112,7 +160,9 @@ img {
 .page-overline {
   display: block;
   margin-bottom: 0.45rem;
+
   color: var(--color-primary);
+
   font-size: 0.8rem;
   font-weight: 750;
   letter-spacing: 0.09em;
@@ -121,6 +171,7 @@ img {
 
 .page-title {
   margin-bottom: 0.6rem;
+
   font-size: clamp(2rem, 5vw, 3.2rem);
   font-weight: 760;
   letter-spacing: -0.035em;
@@ -129,7 +180,9 @@ img {
 .page-description {
   max-width: 720px;
   margin-bottom: 0;
+
   color: var(--color-muted);
+
   font-size: 1.05rem;
   line-height: 1.7;
 }
@@ -141,41 +194,256 @@ img {
   box-shadow: var(--shadow-small);
 }
 
+
+/* =====================================================================
+   4. BUTTONS
+   Einheitliches Design für alle Schaltflächen
+   ===================================================================== */
+
+/* Grunddesign für alle Bootstrap-Buttons */
+.btn {
+  display: inline-flex;
+  min-height: 44px;
+  padding: 0.7rem 1.15rem;
+
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: center;
+
+  font-weight: 650;
+  line-height: 1.2;
+  text-decoration: none;
+
+  border-width: 2px;
+  border-radius: 10px;
+
+  box-shadow: none;
+
+  transition:
+    color var(--transition-fast),
+    background-color var(--transition-fast),
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast),
+    transform var(--transition-fast);
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+.btn:focus-visible {
+  outline: 3px solid rgba(64, 86, 214, 0.25);
+  outline-offset: 3px;
+}
+
+/* Größere Buttons */
+.btn-lg {
+  min-height: 52px;
+  padding: 0.85rem 1.4rem;
+
+  font-size: 1rem;
+  border-radius: 12px;
+}
+
+/* Hauptbutton */
 .btn-primary {
-  --bs-btn-bg: var(--color-primary);
-  --bs-btn-border-color: var(--color-primary);
-  --bs-btn-hover-bg: var(--color-primary-dark);
-  --bs-btn-hover-border-color: var(--color-primary-dark);
-  --bs-btn-active-bg: var(--color-primary-dark);
-  --bs-btn-active-border-color: var(--color-primary-dark);
+  color: #ffffff;
+  background: linear-gradient(
+    135deg,
+    var(--color-primary),
+    #5c47d9
+  );
+  border-color: transparent;
+  box-shadow: 0 6px 16px rgba(64, 86, 214, 0.22);
 }
 
-.form-control {
-  min-height: 48px;
-  border-color: #ccd3dc;
-  border-radius: var(--radius-small);
+.btn-primary:hover,
+.btn-primary:focus {
+  color: #ffffff;
+  background: linear-gradient(
+    135deg,
+    var(--color-primary-dark),
+    #4935bd
+  );
+  border-color: transparent;
+  box-shadow: 0 9px 22px rgba(64, 86, 214, 0.3);
 }
 
-.form-control:focus {
+.btn-primary:active {
+  color: #ffffff !important;
+  background: var(--color-primary-dark) !important;
+  border-color: transparent !important;
+}
+
+/* Neutraler sekundärer Button */
+.btn-secondary {
+  color: var(--color-text);
+  background: #eef1f5;
+  border-color: #d9dfe7;
+}
+
+.btn-secondary:hover,
+.btn-secondary:focus {
+  color: var(--color-text);
+  background: #e2e7ed;
+  border-color: #cbd2dc;
+}
+
+/* Transparenter Button mit Rahmen */
+.btn-outline-secondary {
+  color: #536071;
+  background: transparent;
+  border-color: #bfc7d2;
+}
+
+.btn-outline-secondary:hover,
+.btn-outline-secondary:focus {
+  color: var(--color-primary);
+  background: var(--color-primary-light);
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 0.22rem rgba(64, 86, 214, 0.15);
 }
+
+/* Erfolgsbutton */
+.btn-success {
+  color: #ffffff;
+  background: var(--color-success);
+  border-color: var(--color-success);
+}
+
+.btn-success:hover,
+.btn-success:focus {
+  color: #ffffff;
+  background: var(--color-success-dark);
+  border-color: var(--color-success-dark);
+  box-shadow: 0 7px 18px rgba(35, 133, 91, 0.22);
+}
+
+/* Warnungsbutton */
+.btn-warning {
+  color: #4d3400;
+  background: #f2bd4c;
+  border-color: #f2bd4c;
+}
+
+.btn-warning:hover,
+.btn-warning:focus {
+  color: #3c2900;
+  background: #dea733;
+  border-color: #dea733;
+  box-shadow: 0 7px 18px rgba(183, 121, 13, 0.2);
+}
+
+/* Gefahrenbutton */
+.btn-danger {
+  color: #ffffff;
+  background: var(--color-danger);
+  border-color: var(--color-danger);
+}
+
+.btn-danger:hover,
+.btn-danger:focus {
+  color: #ffffff;
+  background: var(--color-danger-dark);
+  border-color: var(--color-danger-dark);
+  box-shadow: 0 7px 18px rgba(198, 56, 80, 0.22);
+}
+
+/* Optionaler unauffälliger Button */
+.btn-ghost {
+  color: var(--color-muted);
+  background: transparent;
+  border-color: transparent;
+}
+
+.btn-ghost:hover,
+.btn-ghost:focus {
+  color: var(--color-primary);
+  background: var(--color-primary-light);
+  border-color: transparent;
+}
+
+/* Deaktivierte Buttons */
+.btn:disabled,
+.btn.disabled {
+  color: #8b95a4;
+  background: #e8ebef;
+  border-color: #e0e4e9;
+
+  box-shadow: none;
+  cursor: not-allowed;
+  opacity: 0.75;
+  transform: none;
+}
+
+
+/* =====================================================================
+   5. FORMULARE
+   Eingabefelder, Labels und Fokuszustände
+   ===================================================================== */
 
 .form-label {
   margin-bottom: 0.45rem;
   font-weight: 650;
 }
 
+.form-control {
+  min-height: 48px;
+  padding: 0.7rem 0.9rem;
+
+  color: var(--color-text);
+  background: var(--color-surface);
+
+  border: 1px solid #ccd3dc;
+  border-radius: var(--radius-small);
+
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.form-control::placeholder {
+  color: #98a1af;
+}
+
+.form-control:hover {
+  border-color: #adb7c5;
+}
+
+.form-control:focus {
+  color: var(--color-text);
+  background: var(--color-surface);
+
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 0.22rem rgba(64, 86, 214, 0.15);
+}
+
+.form-text {
+  color: var(--color-muted);
+  font-size: 0.83rem;
+}
+
+
+/* =====================================================================
+   6. LOGIN UND REGISTRIERUNG
+   Gemeinsames Design für Authentifizierungsseiten
+   ===================================================================== */
+
 .auth-page {
   display: grid;
   min-height: calc(100vh - 150px);
   padding: 3rem 1rem;
+
   place-items: center;
 }
 
 .auth-card {
   width: min(100%, 500px);
   padding: clamp(1.5rem, 5vw, 2.5rem);
+
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-large);
@@ -187,20 +455,26 @@ img {
   width: 54px;
   height: 54px;
   margin-bottom: 1.25rem;
-  color: white;
+
+  color: #ffffff;
+
   font-size: 1.3rem;
   font-weight: 800;
+
   background: linear-gradient(
     135deg,
     var(--color-primary),
     #7548d9
   );
+
   border-radius: 15px;
+
   place-items: center;
 }
 
 .auth-title {
   margin-bottom: 0.5rem;
+
   font-size: 2rem;
   font-weight: 750;
 }
@@ -209,9 +483,6 @@ img {
   margin-bottom: 1.8rem;
   color: var(--color-muted);
 }
-/**********************************************************************
-        FOOTER DESIGN
-**********************************************************************/
 
 .auth-footer {
   margin-top: 1.5rem;
@@ -219,78 +490,32 @@ img {
   text-align: center;
 }
 
-@media (max-width: 768px) {
-  .page-container {
-    width: min(100% - 1.25rem, 1120px);
-    padding: 2rem 0;
-  }
 
-  .auth-page {
-    padding: 2rem 0.75rem;
-  }
-}
+/* =====================================================================
+   7. NAVBAR
+   Hauptnavigation und Markenbereich
+   ===================================================================== */
 
-.app-footer {
-  margin-top: 4rem;
-  color: #dce3f1;
-  background: #172033;
-}
-
-.app-footer-content {
-  display: flex;
-  width: min(1120px, calc(100% - 2rem));
-  margin: 0 auto;
-  padding: 2.2rem 0;
-  gap: 2rem;
-  align-items: flex-start;
-  justify-content: space-between;
-}
-
-.app-footer strong {
-  color: white;
-  font-size: 1.05rem;
-}
-
-.app-footer p {
-  max-width: 480px;
-  margin: 0.4rem 0 0;
-  color: #aeb8c9;
-}
-
-.app-footer-meta {
-  display: flex;
-  color: #aeb8c9;
-  gap: 0.35rem;
-  flex-direction: column;
-  text-align: right;
-}
-
-@media (max-width: 650px) {
-  .app-footer-content {
-    flex-direction: column;
-  }
-
-  .app-footer-meta {
-    text-align: left;
-  }
-}
-/**********************************************************************
-        NAVBAR DESIGN
-**********************************************************************/
 .app-navbar {
-  min-height: 72px;
+  min-height: 100px;
+
   background: rgba(255, 255, 255, 0.94);
   border-bottom: 1px solid rgba(215, 221, 229, 0.85);
   box-shadow: 0 3px 15px rgba(31, 45, 61, 0.04);
+
   backdrop-filter: blur(12px);
 }
 
 .app-brand {
   display: flex;
+
   gap: 0.7rem;
   align-items: center;
+
   color: var(--color-text);
+
   font-weight: 760;
+  text-decoration: none;
 }
 
 .app-brand:hover {
@@ -301,26 +526,40 @@ img {
   display: grid;
   width: 38px;
   height: 38px;
-  color: white;
+
+  color: #ffffff;
+
   font-size: 0.72rem;
   font-weight: 800;
   letter-spacing: 0.04em;
+
   background: linear-gradient(
     135deg,
     var(--color-primary),
     #7149d8
   );
+
   border-radius: 11px;
+
   place-items: center;
 }
 
 .app-nav-link {
   position: relative;
+
   margin: 0 0.15rem;
   padding: 0.55rem 0.75rem !important;
+
   color: #596579;
+
   font-weight: 600;
+  text-decoration: none;
+
   border-radius: 7px;
+
+  transition:
+    color var(--transition-fast),
+    background-color var(--transition-fast);
 }
 
 .app-nav-link:hover {
@@ -332,23 +571,32 @@ img {
   color: var(--color-primary);
   background: var(--color-primary-light);
 }
-/************************************************************************
-        HOMEPAGE DESIGN
-*********************************************************************+++*/
+
+
+/* =====================================================================
+   8. HOMEPAGE – HERO
+   Oberer Startseitenbereich mit Text und Beispiel-Mail
+   ===================================================================== */
 
 .hero-section {
   position: relative;
   overflow: hidden;
+
   padding: clamp(4rem, 9vw, 7rem) 1rem;
 }
 
 .hero-content {
   position: relative;
   z-index: 1;
+
   display: grid;
   width: min(1120px, 100%);
   margin: 0 auto;
-  grid-template-columns: minmax(0, 1.05fr) minmax(350px, 0.95fr);
+
+  grid-template-columns:
+    minmax(0, 1.05fr)
+    minmax(350px, 0.95fr);
+
   gap: clamp(2.5rem, 7vw, 6rem);
   align-items: center;
 }
@@ -356,6 +604,7 @@ img {
 .hero-copy h1 {
   max-width: 750px;
   margin: 1rem 0 1.3rem;
+
   font-size: clamp(2.6rem, 6vw, 4.7rem);
   font-weight: 790;
   line-height: 1.05;
@@ -364,7 +613,9 @@ img {
 
 .hero-copy > p {
   max-width: 650px;
+
   color: var(--color-muted);
+
   font-size: 1.15rem;
   line-height: 1.75;
 }
@@ -372,9 +623,12 @@ img {
 .hero-badge {
   display: inline-flex;
   padding: 0.45rem 0.8rem;
+
   color: var(--color-primary);
+
   font-size: 0.8rem;
   font-weight: 750;
+
   background: var(--color-primary-light);
   border: 1px solid #d6ddff;
   border-radius: 999px;
@@ -383,6 +637,7 @@ img {
 .hero-actions {
   display: flex;
   margin-top: 2rem;
+
   gap: 0.8rem;
   flex-wrap: wrap;
 }
@@ -390,32 +645,44 @@ img {
 .hero-benefits {
   display: flex;
   margin-top: 1.7rem;
+
   color: #536071;
+
   font-size: 0.9rem;
+
   gap: 1rem;
   flex-wrap: wrap;
 }
 
 .hero-demo-card {
   overflow: hidden;
-  background: white;
+
+  background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: 20px;
+
   box-shadow:
     0 30px 70px rgba(44, 58, 120, 0.16),
     0 3px 10px rgba(31, 45, 61, 0.06);
+
   transform: rotate(1.5deg);
-  transition: transform 250ms ease;
+
+  transition:
+    transform var(--transition-normal),
+    box-shadow var(--transition-normal);
 }
 
 .hero-demo-card:hover {
+  box-shadow: var(--shadow-large);
   transform: rotate(0deg) translateY(-5px);
 }
 
 .demo-window-toolbar {
   display: flex;
   padding: 0.9rem 1rem;
+
   gap: 0.4rem;
+
   background: #f3f5f8;
   border-bottom: 1px solid var(--color-border);
 }
@@ -423,6 +690,7 @@ img {
 .demo-window-toolbar span {
   width: 10px;
   height: 10px;
+
   background: #c2c8d1;
   border-radius: 50%;
 }
@@ -435,8 +703,11 @@ img {
   display: inline-block;
   margin-bottom: 1.2rem;
   padding: 0.3rem 0.65rem;
+
   color: #586579;
+
   font-size: 0.75rem;
+
   background: #edf0f4;
   border-radius: 999px;
 }
@@ -447,6 +718,7 @@ img {
 
 .demo-sender {
   color: var(--color-muted);
+
   font-size: 0.86rem;
   overflow-wrap: anywhere;
 }
@@ -454,35 +726,56 @@ img {
 .demo-warning {
   margin-top: 1.5rem;
   padding: 0.8rem 1rem;
-  color: #8f5a00;
+
+  color: var(--color-warning-dark);
+
   font-weight: 650;
-  background: #fff3d5;
+
+  background: var(--color-warning-light);
   border: 1px solid #edce87;
-  border-radius: 8px;
+  border-radius: var(--radius-small);
 }
+
+
+/* =====================================================================
+   9. HOMEPAGE – HINTERGRUNDFORMEN
+   Dekorative Kreise im Hero-Bereich
+   ===================================================================== */
 
 .hero-background-shape {
   position: absolute;
+
   border-radius: 50%;
   filter: blur(2px);
+
   pointer-events: none;
 }
 
 .hero-shape-one {
   top: -160px;
   right: -120px;
+
   width: 440px;
   height: 440px;
+
   background: rgba(64, 86, 214, 0.1);
 }
 
 .hero-shape-two {
   bottom: -200px;
   left: -150px;
+
   width: 380px;
   height: 380px;
+
   background: rgba(117, 72, 217, 0.07);
 }
+
+
+/* =====================================================================
+   10. HOMEPAGE – FUNKTIONSKARTEN
+   Bereich „So funktioniert es“
+   ===================================================================== */
 
 .feature-section {
   padding: 2rem 0 5rem;
@@ -495,6 +788,7 @@ img {
 
 .section-heading h2 {
   margin-bottom: 0.7rem;
+
   font-size: clamp(2rem, 4vw, 2.8rem);
   font-weight: 750;
 }
@@ -506,21 +800,26 @@ img {
 .feature-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
+
   gap: 1.2rem;
 }
 
 .feature-card {
   padding: 1.7rem;
-  background: white;
+
+  background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-medium);
   box-shadow: var(--shadow-small);
+
   transition:
-    transform 180ms ease,
-    box-shadow 180ms ease;
+    transform var(--transition-normal),
+    box-shadow var(--transition-normal),
+    border-color var(--transition-normal);
 }
 
 .feature-card:hover {
+  border-color: #c9d1dd;
   box-shadow: var(--shadow-medium);
   transform: translateY(-5px);
 }
@@ -528,7 +827,9 @@ img {
 .feature-number {
   display: block;
   margin-bottom: 1.2rem;
+
   color: var(--color-primary);
+
   font-size: 0.85rem;
   font-weight: 800;
 }
@@ -539,20 +840,31 @@ img {
 
 .feature-card p {
   margin-bottom: 0;
+
   color: var(--color-muted);
   line-height: 1.7;
 }
 
+
+/* =====================================================================
+   11. HOMEPAGE – SICHERHEITSABSCHNITT
+   Bereich „Mehr als nur ein Quiz“
+   ===================================================================== */
+
 .security-section {
   padding: 4rem 0;
-  background: #edf1f8;
+
+  background: var(--color-surface-muted);
   border-top: 1px solid #e0e5ed;
   border-bottom: 1px solid #e0e5ed;
 }
 
 .security-content {
   display: grid;
-  grid-template-columns: minmax(0, 1.3fr) minmax(280px, 0.7fr);
+  grid-template-columns:
+    minmax(0, 1.3fr)
+    minmax(280px, 0.7fr);
+
   gap: 4rem;
   align-items: center;
 }
@@ -564,6 +876,7 @@ img {
 
 .security-content p {
   max-width: 650px;
+
   color: var(--color-muted);
   line-height: 1.75;
 }
@@ -571,27 +884,35 @@ img {
 .security-list {
   padding: 0;
   margin: 1.5rem 0 0;
+
   list-style: none;
 }
 
 .security-list li {
   position: relative;
+
   padding: 0.55rem 0 0.55rem 2rem;
+
   font-weight: 550;
 }
 
 .security-list li::before {
   position: absolute;
   left: 0;
+
   color: var(--color-success);
+
   font-weight: 800;
+
   content: "✓";
 }
 
 .security-stat-card {
   padding: 2rem;
+
   text-align: center;
-  background: white;
+
+  background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-large);
   box-shadow: var(--shadow-medium);
@@ -599,7 +920,7 @@ img {
 
 .security-stat-card hr {
   margin: 1.6rem 0;
-  border-color: #dfe4ea;
+  border-color: var(--color-border);
 }
 
 .security-stat-value,
@@ -609,6 +930,7 @@ img {
 
 .security-stat-value {
   color: var(--color-primary);
+
   font-size: 2.4rem;
   font-weight: 800;
 }
@@ -617,6 +939,59 @@ img {
   margin-top: 0.25rem;
   color: var(--color-muted);
 }
+
+
+/* =====================================================================
+   12. FOOTER
+   Unterer Informationsbereich der Website
+   ===================================================================== */
+
+.app-footer {
+  margin-top: 4rem;
+
+  color: #dce3f1;
+  background: #172033;
+}
+
+.app-footer-content {
+  display: flex;
+  width: min(1120px, calc(100% - 2rem));
+  margin: 0 auto;
+  padding: 2.2rem 0;
+
+  gap: 2rem;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.app-footer strong {
+  color: #ffffff;
+  font-size: 1.05rem;
+}
+
+.app-footer p {
+  max-width: 480px;
+  margin: 0.4rem 0 0;
+
+  color: #aeb8c9;
+}
+
+.app-footer-meta {
+  display: flex;
+
+  color: #aeb8c9;
+
+  gap: 0.35rem;
+  flex-direction: column;
+
+  text-align: right;
+}
+
+
+/* =====================================================================
+   13. RESPONSIVES DESIGN
+   Anpassungen für Tablets und kleinere Bildschirme
+   ===================================================================== */
 
 @media (max-width: 900px) {
   .hero-content,
@@ -630,12 +1005,37 @@ img {
   }
 }
 
-@media (max-width: 700px) {
-  .feature-grid {
-    grid-template-columns: 1fr;
+@media (max-width: 768px) {
+  .page-container {
+    width: min(100% - 1.25rem, 1120px);
+    padding: 2rem 0;
+  }
+
+  .auth-page {
+    padding: 2rem 0.75rem;
   }
 
   .hero-copy h1 {
     font-size: 2.7rem;
+  }
+}
+
+@media (max-width: 700px) {
+  .feature-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 650px) {
+  .app-footer-content {
+    flex-direction: column;
+  }
+
+  .app-footer-meta {
+    text-align: left;
+  }
+
+  .hero-actions .btn {
+    width: 100%;
   }
 }
