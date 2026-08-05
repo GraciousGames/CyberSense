@@ -11,3 +11,26 @@ export async function getScenarios() {
 
   return response.json();
 }
+
+export async function createScenario(scenario) {
+  const response = await fetch(`${API_BASE_URL}/scenarios`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(scenario)
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    const message =
+      data.errors?.join(" ") ??
+      data.message ??
+      "Das Szenario konnte nicht gespeichert werden.";
+
+    throw new Error(message);
+  }
+
+  return data;
+}
