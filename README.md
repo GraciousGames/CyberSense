@@ -8,7 +8,7 @@ Das Projekt entsteht im Rahmen des Moduls **Web Programming** an der **HAW Hambu
 
 ## Projektinformationen
 
-| | |
+|---|---|
 | Hochschule | HAW Hamburg |
 | Studiengang | Medieninformatik (B.Sc.) |
 | Modul | Web Programming |
