@@ -687,6 +687,21 @@ textarea.form-control {
   background: var(--color-primary-light);
 }
 
+.app-nav-button {
+  border: 0;
+  background: transparent;
+  font-family: inherit;
+}
+
+.app-nav-user {
+  margin: 0 0.15rem;
+  padding: 0.55rem 0.8rem;
+
+  color: #d5c5ff;
+
+  font-weight: 600;
+  white-space: nowrap;
+}
 
 /* =====================================================================
    9. HOMEPAGE – HERO

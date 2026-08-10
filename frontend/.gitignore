@@ -30,3 +30,4 @@ node_modules/
 backend/database/*.db
 backend/database/*.sqlite
 backend/database/*.sqlite3
+*.sqlite
