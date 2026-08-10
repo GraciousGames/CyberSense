@@ -1,8 +1,27 @@
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { loginUser } from "../services/authService.js";
 
-function LoginPage() {
-  function handleSubmit(event) {
+function LoginPage({ onLogin }) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+
+  const navigate = useNavigate();
+
+  async function handleSubmit(event) {
     event.preventDefault();
+
+    setError("");
+
+    try {
+      const user = await loginUser(email, password);
+      onLogin(user);
+
+      navigate("/training");
+    } catch (error) {
+      setError(error.message);
+    }
   }
 
   return (
@@ -17,7 +36,11 @@ function LoginPage() {
         <p className="auth-description">
           Melde dich an, um dein Training fortzusetzen.
         </p>
-
+        {error && (
+            <div className="alert alert-danger" role="alert">
+              {error}
+            </div>
+        )}
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
             <label className="form-label" htmlFor="email">
@@ -25,13 +48,15 @@ function LoginPage() {
             </label>
 
             <input
-              className="form-control"
-              id="email"
-              name="email"
-              type="email"
-              autoComplete="email"
-              placeholder="name@example.com"
-              required
+                className="form-control"
+                id="email"
+                name="email"
+                type="email"
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+                autoComplete="email"
+                placeholder="name@example.com"
+                required
             />
           </div>
 
@@ -41,13 +66,15 @@ function LoginPage() {
             </label>
 
             <input
-              className="form-control"
-              id="password"
-              name="password"
-              type="password"
-              autoComplete="current-password"
-              placeholder="Passwort eingeben"
-              required
+                className="form-control"
+                id="password"
+                name="password"
+                type="password"
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
+                autoComplete="current-password"
+                placeholder="Passwort eingeben"
+                required
             />
           </div>
 
