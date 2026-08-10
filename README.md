@@ -1,241 +1,268 @@
 # CyberSense
 
-CyberSense ist eine interaktive Webanwendung zur Sensibilisierung für Phishing, Social Engineering und E-Mail-Sicherheit.
+CyberSense is an interactive full-stack web application that raises awareness of phishing, social engineering, and email security. Using realistic training messages, users learn how to identify common attack patterns and assess emails correctly.
 
-Das Projekt entsteht im Rahmen des Moduls **Web Programming** an der **HAW Hamburg**.
+The project is being developed as part of the **Web Programming** module at **HAW Hamburg**.
 
----
-
-## Projektinformationen
+## Project Information
 
 | | |
 |---|---|
-| Hochschule | HAW Hamburg |
-| Studiengang | Medieninformatik (B.Sc.) |
-| Modul | Web Programming |
-| Dozentin | Stephanie Held |
-| Semester | Wintersemester 2026/2027 |
+| University | HAW Hamburg |
+| Degree program | Media Informatics (B.Sc.) |
+| Module | Web Programming |
+| Lecturer | Stephanie Held |
+| Semester | Winter semester 2026/2027 |
 
-### Autoren
+### Authors
 
-| Name | Matrikelnummer |
-|------|----------------|
+| Name | Student ID |
+|---|---|
 | Grace Gehlisch | xxxxxxx |
 | Clemens ... | xxxxxxx |
 | Marcel ... | xxxxxxx |
 
----
+## Project Goal
 
-# Projektziel
+CyberSense teaches users how to handle suspicious emails safely. The training scenarios cover topics such as:
 
-CyberSense vermittelt den sicheren Umgang mit Phishing-E-Mails anhand realistischer Trainingsszenarien.
+- manipulated sender addresses
+- fake or mismatched links
+- artificial time pressure
+- social engineering
+- fake invoices and unexpected payment requests
+- parcel delivery scams
 
-Benutzer lernen typische Angriffsmerkmale wie
+After each assessment, learners receive immediate feedback, an explanation, and specific clues pointing out suspicious characteristics.
 
-- manipulierte Absenderadressen
-- gefälschte Links
-- Zeitdruck
-- Social Engineering
-- Fake-Rechnungen
-- Paketbetrug
+## Current Features
 
-zu erkennen und richtig einzuordnen.
+### Implemented
 
----
+- React frontend using Vite and React Router
+- responsive user interface
+- home page, navigation, and footer
+- interactive phishing training
+- loading training scenarios through a REST API
+- classification as legitimate, suspicious, or phishing
+- score and progress display
+- immediate feedback and expandable clues
+- Express backend with a health check
+- SQLite database containing scenarios and related clues
+- automatic database initialization and seeding
+- API endpoints for retrieving all scenarios or a single scenario
+- user interfaces for login, registration, and administration
 
-# Funktionen
+### Partially Implemented
 
-## Bereits umgesetzt
+- The administration form sends new scenarios to `POST /api/scenarios`, but the corresponding backend endpoint has not been implemented yet.
+- Login and registration are currently frontend prototypes and are not connected to the backend.
+- The administration area does not have access control yet.
 
-- React Frontend
-- Responsive Oberfläche
-- Navigation
-- Login
-- Registrierung
-- Interaktives Phishing-Training
-- Sofortiges Feedback
-- Hinweise zu jeder E-Mail
-- Fortschrittsanzeige
+### Planned
 
-## Geplant
+- complete CRUD API for training scenarios
+- user management and roles
+- server-side registration and login
+- password hashing and secure authentication
+- storage of training progress and results
+- personal and administrative statistics
+- automated frontend, backend, and API tests
+- application deployment
 
-- Express Backend
-- REST API
-- Benutzerverwaltung
-- Login über Backend
-- Passwort-Hashing
-- SQLite Datenbank
-- Speichern von Trainingsständen
-- Statistiken
-- Adminbereich
-- Weitere Trainingsszenarien
+## Technologies
 
----
+### Frontend
 
-# Technologien
-
-## Frontend
-
-- React
+- React 19
 - Vite
 - React Router
-- Bootstrap
-- CSS3
+- custom CSS; Bootstrap is installed as a dependency but has not been integrated yet
+- Fetch API
 
-## Backend
+### Backend
 
 - Node.js
-- Express
+- Express 5
+- CORS
+- SQLite through the Node.js `node:sqlite` module
 
-## Datenbank
+### Development
 
-- SQLite (geplant)
+- Git and GitHub
+- ESLint
+- Nodemon
 
-## Versionsverwaltung
+## Architecture
 
-- Git
-- GitHub
+The frontend and backend are separated and communicate through a REST API.
 
----
-
-# Projektstruktur
-
+```text
+React pages and components
+          |
+          v
+    Frontend service
+          |
+       REST/JSON
+          |
+          v
+     Express routes
+          |
+          v
+       Repository
+          |
+          v
+         SQLite
 ```
-CyberSense
-│
-├── frontend
-│   ├── public
-│   ├── src
-│   │   ├── assets
-│   │   ├── components
-│   │   ├── data
-│   │   ├── pages
-│   │   ├── services
-│   │   ├── styles
+
+The frontend is divided into reusable components, pages, services, and styles. In the backend, HTTP routes, database access, initialization, and seed data are organized separately. Further separation into controllers and services is planned as the application grows.
+
+## Data Model
+
+The SQLite database currently contains two tables:
+
+- `scenarios`: content, sender information, classification, and explanation of a training message
+- `clues`: clues associated with a scenario
+
+A scenario can have multiple clues. `clues.scenario_id` references `scenarios.id` as a foreign key. When a scenario is deleted, its related clues are intended to be removed through `ON DELETE CASCADE` as well.
+
+The database file is created at `backend/database/cybersense.sqlite` when the backend starts for the first time. If the scenarios table is empty, the example scenarios from `backend/src/data/scenarios.js` are inserted.
+
+## Project Structure
+
+```text
+CyberSense/
+├── frontend/
+│   ├── public/
+│   ├── src/
+│   │   ├── assets/
+│   │   ├── components/
+│   │   ├── pages/
+│   │   ├── services/
+│   │   ├── styles/
 │   │   ├── App.jsx
 │   │   └── main.jsx
 │   └── package.json
-│
-├── backend
-│   ├── src
-│   │   ├── routes
-│   │   ├── data
-│   │   ├── database
+├── backend/
+│   ├── src/
+│   │   ├── data/
+│   │   ├── database/
+│   │   ├── repositories/
+│   │   ├── routes/
 │   │   └── app.js
 │   └── package.json
-│
+├── CONTRIBUTING.md
 └── README.md
 ```
 
----
+## Installation and Setup
 
-# Installation
+### Requirements
 
-## Repository klonen
+- Git
+- a recent Node.js version with support for `node:sqlite`
+- npm
+
+> Depending on the Node.js version, `node:sqlite` may still be marked as experimental.
+
+### Clone the Repository
 
 ```bash
 git clone https://github.com/GraciousGames/CyberSense.git
-```
-
-```
 cd CyberSense
 ```
 
----
-
-## Frontend installieren
-
-```bash
-cd frontend
-npm install
-```
-
-Frontend starten
-
-```bash
-npm run dev
-```
-
-Die Anwendung ist anschließend erreichbar unter
-
-```
-http://localhost:5173
-```
-
----
-
-## Backend installieren
+### Start the Backend
 
 ```bash
 cd backend
 npm install
-```
-
-Backend starten
-
-```bash
 npm run dev
 ```
 
-Backend erreichbar unter
+The backend is then available at `http://localhost:3000`.
 
-```
-http://localhost:3000
-```
+### Start the Frontend
 
----
+In a second terminal:
 
-# Git-Workflow
-
-## Branches
-
-```
-main
+```bash
+cd frontend
+npm install
+npm run dev
 ```
 
-Produktive Version
+The frontend is then available at `http://localhost:5173` by default.
 
-```
-dev
-```
+Both the frontend and backend must be running for the training to work. The addresses `http://localhost:5173` and `http://localhost:3000` are currently configured directly in the source code.
 
-Entwicklungsbranch
+## REST API
 
-```
-feature/...
-```
+| Method | Endpoint | Description | Status |
+|---|---|---|---|
+| `GET` | `/api/health` | Retrieve the backend status | implemented |
+| `GET` | `/api/scenarios` | Retrieve all training scenarios | implemented |
+| `GET` | `/api/scenarios/:id` | Retrieve a single scenario | implemented |
+| `POST` | `/api/scenarios` | Create a new scenario | planned |
+| `PUT/PATCH` | `/api/scenarios/:id` | Update a scenario | planned |
+| `DELETE` | `/api/scenarios/:id` | Delete a scenario | planned |
 
-Neue Funktionen
+### Example
 
-Beispiele
-
-```
-feature/login
-feature/register
-feature/training
-feature/backend
-feature/database
+```bash
+curl http://localhost:3000/api/scenarios/1
 ```
 
----
+Invalid IDs result in `400 Bad Request`, while scenarios that do not exist result in `404 Not Found`.
 
-# Projektstatus
+## Quality Assurance
 
-| Funktion | Status |
-|----------|--------|
-| React | ✅ |
-| Navigation | ✅ |
-| Login | ✅ |
-| Registrierung | ✅ |
-| Phishing-Training | ✅ |
-| REST API | 🚧 |
-| Backend | 🚧 |
-| Datenbank | ⏳ |
-| Authentifizierung | ⏳ |
-| Statistik | ⏳ |
+The frontend provides the following scripts:
 
----
+```bash
+cd frontend
+npm run lint
+npm run build
+```
 
-# Lizenz
+Automated tests have not been added yet and are planned for a later stage of the project.
 
-Dieses Projekt wurde ausschließlich zu Lehrzwecken im Rahmen des Moduls **Web Programming** an der **HAW Hamburg** entwickelt.
+## Security and Known Limitations
+
+- Login and registration do not store user accounts yet.
+- Passwords are currently neither transmitted nor stored or hashed.
+- Administration pages are publicly accessible and are not protected by roles yet.
+- CORS currently permits only the local frontend address.
+- API and port settings cannot be configured through environment variables yet.
+- Server-side validation, rate limiting, and centralized error handling still need to be added.
+- There is no deployment configuration yet.
+
+## Git Workflow
+
+Development uses the following branches:
+
+- `main`: stable project version
+- `dev`: shared development version
+- `feature/<feature-name>`: implementation of individual features
+
+Further information about branches, commits, and pull requests is available in [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## Project Status
+
+| Area | Status |
+|---|---|
+| React frontend | ✅ implemented |
+| Navigation and responsive design | ✅ implemented |
+| Interactive training | ✅ implemented |
+| Express backend | ✅ implemented |
+| Read-only REST API | ✅ implemented |
+| SQLite database | ✅ implemented |
+| Administration CRUD | 🚧 partially implemented |
+| Authentication | ⏳ planned |
+| Training progress and statistics | ⏳ planned |
+| Automated tests | ⏳ planned |
+| Deployment | ⏳ planned |
+
+## License
+
+This project was developed exclusively for educational purposes as part of the **Web Programming** module at **HAW Hamburg**.

@@ -42,6 +42,6 @@ app.use((request, response) => {
 
 app.listen(port, () => {
   console.log(
-    `Backend läuft auf http://localhost:${port}`
+    `Backend läuft auf http://localhost:${port}/api/scenarios.`
   );
 });
