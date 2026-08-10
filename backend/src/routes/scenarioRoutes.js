@@ -1,11 +1,23 @@
 import { Router } from "express";
 
 import {
+  createScenario,
+  deleteScenario,
   findAllScenarios,
-  findScenarioById
+  findScenarioById,
+  updateScenario
 } from "../repositories/scenarioRepository.js";
+import {
+  validateScenario
+} from "../validation/scenarioValidation.js";
 
 const router = Router();
+
+function parseScenarioId(value) {
+  const id = Number(value);
+
+  return Number.isInteger(id) && id > 0 ? id : null;
+}
 
 router.get("/", (request, response) => {
   const scenarios = findAllScenarios();
@@ -13,12 +25,27 @@ router.get("/", (request, response) => {
   response.status(200).json(scenarios);
 });
 
-router.get("/:id", (request, response) => {
-  const scenarioId = Number(request.params.id);
+router.post("/", (request, response) => {
+  const errors = validateScenario(request.body);
 
-  if (!Number.isInteger(scenarioId) || scenarioId <= 0) {
+  if (errors.length > 0) {
     return response.status(400).json({
-      message: "Die Szenario-ID ist ungültig."
+      message: "The scenario data is invalid.",
+      errors
+    });
+  }
+
+  const scenario = createScenario(request.body);
+
+  return response.status(201).json(scenario);
+});
+
+router.get("/:id", (request, response) => {
+  const scenarioId = parseScenarioId(request.params.id);
+
+  if (!scenarioId) {
+    return response.status(400).json({
+      message: "The scenario ID is invalid."
     });
   }
 
@@ -26,11 +53,58 @@ router.get("/:id", (request, response) => {
 
   if (!scenario) {
     return response.status(404).json({
-      message: "Szenario wurde nicht gefunden."
+      message: "Scenario not found."
     });
   }
 
   return response.status(200).json(scenario);
+});
+
+router.put("/:id", (request, response) => {
+  const scenarioId = parseScenarioId(request.params.id);
+
+  if (!scenarioId) {
+    return response.status(400).json({
+      message: "The scenario ID is invalid."
+    });
+  }
+
+  const errors = validateScenario(request.body);
+
+  if (errors.length > 0) {
+    return response.status(400).json({
+      message: "The scenario data is invalid.",
+      errors
+    });
+  }
+
+  const scenario = updateScenario(scenarioId, request.body);
+
+  if (!scenario) {
+    return response.status(404).json({
+      message: "Scenario not found."
+    });
+  }
+
+  return response.status(200).json(scenario);
+});
+
+router.delete("/:id", (request, response) => {
+  const scenarioId = parseScenarioId(request.params.id);
+
+  if (!scenarioId) {
+    return response.status(400).json({
+      message: "The scenario ID is invalid."
+    });
+  }
+
+  if (!deleteScenario(scenarioId)) {
+    return response.status(404).json({
+      message: "Scenario not found."
+    });
+  }
+
+  return response.status(204).send();
 });
 
 export default router;

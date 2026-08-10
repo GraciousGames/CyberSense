@@ -7,6 +7,7 @@ import {
 import Navbar from "./components/Navbar.jsx";
 import Footer from "./components/Footer.jsx";
 import AdminPage from "./pages/AdminPage.jsx";
+import AdminScenarioListPage from "./pages/AdminScenarioListPage.jsx";
 import AdminScenarioPage from "./pages/AdminScenarioPage.jsx";
 import HomePage from "./pages/HomePage.jsx";
 import TrainingPage from "./pages/TrainingPage.jsx";
@@ -26,7 +27,15 @@ function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/admin" element={<AdminPage />} />
+            <Route
+              path="/admin/scenarios"
+              element={<AdminScenarioListPage />}
+            />
             <Route path="/admin/scenarios/new" element={<AdminScenarioPage />} />
+            <Route
+              path="/admin/scenarios/:id/edit"
+              element={<AdminScenarioPage />}
+            />
           </Routes>
         </div>
 

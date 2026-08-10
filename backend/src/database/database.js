@@ -15,10 +15,9 @@ mkdirSync(databaseDirectory, {
   recursive: true
 });
 
-const databasePath = resolve(
-  databaseDirectory,
-  "cybersense.sqlite"
-);
+const databasePath = process.env.CYBERSENSE_DATABASE_PATH
+  ? resolve(process.env.CYBERSENSE_DATABASE_PATH)
+  : resolve(databaseDirectory, "cybersense.sqlite");
 
 const database = new DatabaseSync(databasePath);
 

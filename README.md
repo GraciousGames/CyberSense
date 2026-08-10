@@ -51,23 +51,23 @@ After each assessment, learners receive immediate feedback, an explanation, and 
 - SQLite database containing scenarios and related clues
 - automatic database initialization and seeding
 - API endpoints for retrieving all scenarios or a single scenario
+- complete CRUD API for validated training scenarios
 - user interfaces for login, registration, and administration
+- administration interface for creating, viewing, editing, and deleting scenarios
 
 ### Partially Implemented
 
-- The administration form sends new scenarios to `POST /api/scenarios`, but the corresponding backend endpoint has not been implemented yet.
 - Login and registration are currently frontend prototypes and are not connected to the backend.
 - The administration area does not have access control yet.
 
 ### Planned
 
-- complete CRUD API for training scenarios
 - user management and roles
 - server-side registration and login
 - password hashing and secure authentication
 - storage of training progress and results
 - personal and administrative statistics
-- automated frontend, backend, and API tests
+- additional frontend and HTTP-level API tests
 - application deployment
 
 ## Technologies
@@ -124,7 +124,7 @@ The SQLite database currently contains two tables:
 - `scenarios`: content, sender information, classification, and explanation of a training message
 - `clues`: clues associated with a scenario
 
-A scenario can have multiple clues. `clues.scenario_id` references `scenarios.id` as a foreign key. When a scenario is deleted, its related clues are intended to be removed through `ON DELETE CASCADE` as well.
+A scenario can have multiple clues. `clues.scenario_id` references `scenarios.id` as a foreign key. When a scenario is deleted, its related clues are removed through `ON DELETE CASCADE` as well.
 
 The database file is created at `backend/database/cybersense.sqlite` when the backend starts for the first time. If the scenarios table is empty, the example scenarios from `backend/src/data/scenarios.js` are inserted.
 
@@ -203,9 +203,9 @@ Both the frontend and backend must be running for the training to work. The addr
 | `GET` | `/api/health` | Retrieve the backend status | implemented |
 | `GET` | `/api/scenarios` | Retrieve all training scenarios | implemented |
 | `GET` | `/api/scenarios/:id` | Retrieve a single scenario | implemented |
-| `POST` | `/api/scenarios` | Create a new scenario | planned |
-| `PUT/PATCH` | `/api/scenarios/:id` | Update a scenario | planned |
-| `DELETE` | `/api/scenarios/:id` | Delete a scenario | planned |
+| `POST` | `/api/scenarios` | Create a new scenario | implemented |
+| `PUT` | `/api/scenarios/:id` | Replace an existing scenario | implemented |
+| `DELETE` | `/api/scenarios/:id` | Delete a scenario and its clues | implemented |
 
 ### Example
 
@@ -225,7 +225,12 @@ npm run lint
 npm run build
 ```
 
-Automated tests have not been added yet and are planned for a later stage of the project.
+The backend CRUD tests use a temporary SQLite database:
+
+```bash
+cd backend
+npm test
+```
 
 ## Security and Known Limitations
 
@@ -257,10 +262,10 @@ Further information about branches, commits, and pull requests is available in [
 | Express backend | ✅ implemented |
 | Read-only REST API | ✅ implemented |
 | SQLite database | ✅ implemented |
-| Administration CRUD | 🚧 partially implemented |
+| Administration CRUD | ✅ implemented |
 | Authentication | ⏳ planned |
 | Training progress and statistics | ⏳ planned |
-| Automated tests | ⏳ planned |
+| Backend CRUD tests | ✅ implemented |
 | Deployment | ⏳ planned |
 
 ## License

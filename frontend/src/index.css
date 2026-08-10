@@ -1149,7 +1149,188 @@ textarea.form-control {
 
 
 /* =====================================================================
-   14. ADMINFORMULAR
+   14. ADMIN-SZENARIOLISTE
+   Übersicht und Detailansicht vorhandener Trainingsszenarien
+   ===================================================================== */
+
+.admin-list-heading {
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
+.admin-list-heading > div {
+  min-width: 0;
+}
+
+.admin-list-heading > .btn {
+  flex: 0 0 auto;
+}
+
+.admin-list-status,
+.admin-list-empty {
+  padding: 2rem;
+  text-align: center;
+}
+
+.admin-list-status {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: center;
+}
+
+.admin-list-status p,
+.admin-list-empty p {
+  margin-bottom: 0;
+  color: var(--color-muted);
+}
+
+.admin-list-empty h2 {
+  color: var(--color-text);
+}
+
+.admin-list-empty .btn {
+  margin-top: 1rem;
+}
+
+.admin-list-summary {
+  margin-bottom: 0.75rem;
+  color: var(--color-muted);
+}
+
+.admin-list-summary strong {
+  color: var(--color-text);
+}
+
+.admin-scenario-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.admin-scenario-item {
+  padding: 1.4rem;
+}
+
+.admin-scenario-main {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.admin-scenario-id {
+  min-width: 3rem;
+  padding: 0.45rem 0.55rem;
+  color: #c5b0ff;
+  font-weight: 750;
+  text-align: center;
+  background: var(--color-primary-light);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  border-radius: var(--radius-small);
+}
+
+.admin-scenario-copy {
+  min-width: 0;
+}
+
+.admin-scenario-copy h2 {
+  margin: 0.45rem 0 0.3rem;
+  color: var(--color-text);
+  font-size: 1.2rem;
+  overflow-wrap: anywhere;
+}
+
+.admin-scenario-copy > p {
+  margin: 0;
+  color: var(--color-muted);
+  overflow-wrap: anywhere;
+}
+
+.admin-scenario-meta {
+  display: flex;
+  gap: 0.65rem;
+  align-items: center;
+  color: var(--color-muted);
+  font-size: 0.82rem;
+}
+
+.admin-answer-badge {
+  padding: 0.25rem 0.55rem;
+  font-weight: 750;
+  border: 1px solid;
+  border-radius: 999px;
+}
+
+.admin-answer-legitim {
+  color: #7ee2b8;
+  background: var(--color-success-light);
+  border-color: rgba(54, 179, 126, 0.3);
+}
+
+.admin-answer-suspicious {
+  color: #f0cf8c;
+  background: var(--color-warning-light);
+  border-color: rgba(231, 169, 59, 0.3);
+}
+
+.admin-answer-phishing {
+  color: #ff9bad;
+  background: var(--color-danger-light);
+  border-color: rgba(232, 93, 117, 0.3);
+}
+
+.admin-scenario-actions {
+  display: flex;
+  margin-top: 1.25rem;
+  gap: 0.65rem;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+.admin-scenario-details {
+  position: relative;
+}
+
+.admin-scenario-details summary {
+  list-style: none;
+  cursor: pointer;
+}
+
+.admin-scenario-details summary::-webkit-details-marker {
+  display: none;
+}
+
+.admin-scenario-details-content {
+  position: absolute;
+  z-index: 2;
+  right: 0;
+  width: min(430px, calc(100vw - 3rem));
+  margin-top: 0.5rem;
+  padding: 1rem;
+  color: var(--color-text-soft);
+  background: #292635;
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-small);
+  box-shadow: var(--shadow-medium);
+}
+
+.admin-scenario-details-content p {
+  margin-bottom: 0.65rem;
+  overflow-wrap: anywhere;
+}
+
+.admin-scenario-details-content p:last-child {
+  margin-bottom: 0;
+}
+
+.admin-list-back {
+  margin-top: 1.5rem;
+}
+
+
+/* =====================================================================
+   15. ADMINFORMULAR
    Formular zum Erstellen neuer Szenarien
    ===================================================================== */
 
@@ -1188,6 +1369,30 @@ textarea.form-control {
   min-width: 0;
 }
 
+.admin-repeatable-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.admin-repeatable-item {
+  padding: 1.2rem;
+  background: var(--color-background-soft);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-small);
+}
+
+.admin-repeatable-item .mb-3:last-of-type {
+  margin-bottom: 0.75rem !important;
+}
+
+.admin-repeatable-item > .btn {
+  margin-left: auto;
+}
+
+.admin-add-button {
+  align-self: flex-start;
+}
+
 .admin-form-actions {
   display: flex;
   margin-top: 1.5rem;
@@ -1201,7 +1406,7 @@ textarea.form-control {
 
 
 /* =====================================================================
-   15. FOOTER
+   16. FOOTER
    Unterer Informationsbereich
    ===================================================================== */
 
@@ -1249,7 +1454,7 @@ textarea.form-control {
 
 
 /* =====================================================================
-   16. RESPONSIVES DESIGN
+   17. RESPONSIVES DESIGN
    Anpassungen für Tablets und Smartphones
    ===================================================================== */
 
@@ -1281,6 +1486,28 @@ textarea.form-control {
 
   .admin-form-grid {
     grid-template-columns: 1fr;
+  }
+
+  .admin-list-heading {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .admin-list-heading > .btn,
+  .admin-scenario-actions .btn,
+  .admin-scenario-details,
+  .admin-scenario-details summary {
+    width: 100%;
+  }
+
+  .admin-scenario-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .admin-scenario-details-content {
+    position: static;
+    width: 100%;
   }
 
   .admin-form-actions {

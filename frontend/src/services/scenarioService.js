@@ -1,36 +1,56 @@
 const API_BASE_URL = "http://localhost:3000/api";
 
-export async function getScenarios() {
-  const response = await fetch(`${API_BASE_URL}/scenarios`);
+async function request(path, options = {}) {
+  const response = await fetch(`${API_BASE_URL}${path}`, options);
 
-  if (!response.ok) {
-    throw new Error(
-      `Szenarien konnten nicht geladen werden: ${response.status}`
-    );
+  if (response.status === 204) {
+    return null;
   }
 
-  return response.json();
+  const data = await response.json().catch(() => null);
+
+  if (!response.ok) {
+    const message =
+      data?.errors?.join(" ") ??
+      data?.message ??
+      `Die Anfrage ist fehlgeschlagen: ${response.status}`;
+
+    throw new Error(message);
+  }
+
+  return data;
 }
 
-export async function createScenario(scenario) {
-  const response = await fetch(`${API_BASE_URL}/scenarios`, {
+export function getScenarios() {
+  return request("/scenarios");
+}
+
+export function getScenario(id) {
+  return request(`/scenarios/${id}`);
+}
+
+export function createScenario(scenario) {
+  return request("/scenarios", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
     },
     body: JSON.stringify(scenario)
   });
+}
 
-  const data = await response.json();
+export function updateScenario(id, scenario) {
+  return request(`/scenarios/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(scenario)
+  });
+}
 
-  if (!response.ok) {
-    const message =
-      data.errors?.join(" ") ??
-      data.message ??
-      "Das Szenario konnte nicht gespeichert werden.";
-
-    throw new Error(message);
-  }
-
-  return data;
+export function deleteScenario(id) {
+  return request(`/scenarios/${id}`, {
+    method: "DELETE"
+  });
 }

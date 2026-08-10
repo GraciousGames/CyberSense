@@ -6,7 +6,8 @@
   "main": "src/app.js",
   "scripts": {
     "dev": "nodemon src/app.js",
-    "start": "node src/app.js"
+    "start": "node src/app.js",
+    "test": "node --test --test-isolation=none"
   },
   "dependencies": {
     "cors": "^2.8.6",

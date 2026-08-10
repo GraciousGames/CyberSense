@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import { pathToFileURL } from "node:url";
 
 import {
   initDatabase
@@ -15,7 +16,10 @@ const app = express();
 const port = 3000;
 
 initDatabase();
-seedDatabase();
+
+if (process.env.CYBERSENSE_SEED_DATABASE !== "false") {
+  seedDatabase();
+}
 
 app.use(
   cors({
@@ -40,8 +44,28 @@ app.use((request, response) => {
   });
 });
 
-app.listen(port, () => {
-  console.log(
-    `Backend läuft auf http://localhost:${port}/api/scenarios.`
-  );
+app.use((error, request, response, next) => {
+  console.error(error);
+
+  if (response.headersSent) {
+    return next(error);
+  }
+
+  return response.status(500).json({
+    message: "An unexpected server error occurred."
+  });
 });
+
+const entryFileUrl = process.argv[1]
+  ? pathToFileURL(process.argv[1]).href
+  : "";
+
+if (import.meta.url === entryFileUrl) {
+  app.listen(port, () => {
+    console.log(
+      `Backend läuft auf http://localhost:${port}/api/scenarios.`
+    );
+  });
+}
+
+export default app;
