@@ -109,4 +109,73 @@ describe("Auth API", () => {
         assert.equal(response.status, 401);
     });
 
+    test("keeps user authenticated after login", async () => {
+        const user = createTestUser();
+
+        await request(app)
+            .post("/api/auth/register")
+            .send(user);
+
+        const agent = request.agent(app);
+
+        const loginResponse = await agent
+            .post("/api/auth/login")
+            .send({
+                email: user.email,
+                password: user.password
+            });
+
+        assert.equal(loginResponse.status, 200);
+
+        const meResponse = await agent
+            .get("/api/auth/me");
+
+        assert.equal(meResponse.status, 200);
+        assert.equal(meResponse.body.email, user.email);
+    });
+
+    test("rejects /me without authentication", async () => {
+        const response = await request(app)
+            .get("/api/auth/me");
+
+        assert.equal(response.status, 401);
+    });
+
+    test("logs out authenticated user", async () => {
+        const user = createTestUser();
+
+        await request(app)
+            .post("/api/auth/register")
+            .send(user);
+
+        const agent = request.agent(app);
+
+        // Login
+        const loginResponse = await agent
+            .post("/api/auth/login")
+            .send({
+                email: user.email,
+                password: user.password
+            });
+
+        assert.equal(loginResponse.status, 200);
+
+        // Vor Logout muss /me funktionieren
+        const beforeLogout = await agent
+            .get("/api/auth/me");
+
+        assert.equal(beforeLogout.status, 200);
+
+        // Logout
+        const logoutResponse = await agent
+            .post("/api/auth/logout");
+
+        assert.equal(logoutResponse.status, 200);
+
+        // Nach Logout darf /me nicht mehr funktionieren
+        const afterLogout = await agent
+            .get("/api/auth/me");
+
+        assert.equal(afterLogout.status, 401);
+    });
 });

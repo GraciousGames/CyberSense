@@ -10,6 +10,16 @@ export function findUserByEmail(email) {
         .get(email);
 }
 
+export function findUserById(id) {
+    return database
+        .prepare(`
+            SELECT id, username, email, role, created_at
+            FROM users
+            WHERE id = ?
+        `)
+        .get(id);
+}
+
 export function createUser({ username, email, passwordHash }) {
     const result = database
         .prepare(`
