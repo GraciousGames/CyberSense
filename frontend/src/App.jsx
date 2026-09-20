@@ -48,6 +48,20 @@ import RegisterPage
     from "./pages/RegisterPage.jsx";
 
 
+// Informationsseiten.
+import AboutPage
+    from "./pages/AboutPage.jsx";
+
+import ContactPage
+    from "./pages/ContactPage.jsx";
+
+import PrivacyPage
+    from "./pages/PrivacyPage.jsx";
+
+import ImprintPage
+    from "./pages/ImprintPage.jsx";
+
+
 // Statistik.
 import StatisticsPage
     from "./pages/StatisticsPage.jsx";
@@ -71,8 +85,7 @@ function App() {
         useState(null);
 
 
-    // Zeigt an,
-    // ob die Session beim Start noch geprüft wird.
+    // Zeigt an, ob die Session beim Start noch geprüft wird.
     const [
         authLoading,
         setAuthLoading
@@ -93,7 +106,6 @@ function App() {
                 const currentUser =
                     await getCurrentUser();
 
-                // Benutzerzustand speichern.
                 setUser(currentUser);
 
             } finally {
@@ -133,9 +145,9 @@ function App() {
 
                     <Routes>
 
-                        {/* ------------------------------------------- */}
+                        {/* =========================================== */}
                         {/* Öffentliche Seiten */}
-                        {/* ------------------------------------------- */}
+                        {/* =========================================== */}
 
                         <Route
                             path="/"
@@ -145,8 +157,7 @@ function App() {
                         />
 
 
-                        {/* Training funktioniert auch ohne Anmeldung.
-                Eingeloggte Benutzer speichern Attempts. */}
+                        {/* Training funktioniert auch ohne Anmeldung. */}
                         <Route
                             path="/training"
                             element={
@@ -175,9 +186,45 @@ function App() {
                         />
 
 
-                        {/* ------------------------------------------- */}
+                        {/* =========================================== */}
+                        {/* Projekt- und Informationsseiten */}
+                        {/* =========================================== */}
+
+                        <Route
+                            path="/about"
+                            element={
+                                <AboutPage />
+                            }
+                        />
+
+
+                        <Route
+                            path="/contact"
+                            element={
+                                <ContactPage />
+                            }
+                        />
+
+
+                        <Route
+                            path="/privacy"
+                            element={
+                                <PrivacyPage />
+                            }
+                        />
+
+
+                        <Route
+                            path="/imprint"
+                            element={
+                                <ImprintPage />
+                            }
+                        />
+
+
+                        {/* =========================================== */}
                         {/* Persönliche Statistik */}
-                        {/* ------------------------------------------- */}
+                        {/* =========================================== */}
 
                         <Route
                             path="/statistics"
@@ -212,9 +259,9 @@ function App() {
                         />
 
 
-                        {/* ------------------------------------------- */}
+                        {/* =========================================== */}
                         {/* Admin Dashboard */}
-                        {/* ------------------------------------------- */}
+                        {/* =========================================== */}
 
                         <Route
                             path="/admin"
@@ -229,9 +276,9 @@ function App() {
                         />
 
 
-                        {/* ------------------------------------------- */}
+                        {/* =========================================== */}
                         {/* Scenario-Verwaltung */}
-                        {/* ------------------------------------------- */}
+                        {/* =========================================== */}
 
                         <Route
                             path="/admin/scenarios"
