@@ -762,7 +762,7 @@ const scenarios = [
         "ADAC Mitgliederservice",
 
     correctAnswer:
-        "phishing",
+        "phishing,
 
     explanation:
         "Eine Änderung des Mitgliedsbeitrags könnte grundsätzlich plausibel sein. Die fremde Domain und die Aufforderung zur Bestätigung der Zahlungsart sind jedoch Warnzeichen. Die Information sollte direkt über die ADAC-App oder die offizielle Website geprüft werden.",
