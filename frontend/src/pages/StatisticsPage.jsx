@@ -1,4 +1,4 @@
-// React-Hooks für Datenzustand und Laden beim Seitenaufruf.
+// React-Hooks für Datenzustand, Berechnungen und Laden beim Seitenaufruf.
 import {
     useEffect,
     useMemo,
@@ -11,7 +11,7 @@ import {
 } from "../services/attemptService.js";
 
 // Lädt die Szenarien,
-// damit wir Scenario-IDs in lesbare Betreffzeilen umwandeln können.
+// damit Scenario-IDs in lesbare Betreffzeilen umgewandelt werden können.
 import {
     getScenarios
 } from "../services/scenarioService.js";
@@ -25,15 +25,15 @@ function StatisticsPage() {
     const [attempts, setAttempts] =
         useState([]);
 
-    // Alle Szenarien.
+    // Alle verfügbaren Trainingsszenarien.
     const [scenarios, setScenarios] =
         useState([]);
 
-    // Ladezustand.
+    // Ladezustand der Statistikseite.
     const [isLoading, setIsLoading] =
         useState(true);
 
-    // Fehlermeldung.
+    // Fehlermeldung beim Laden der Daten.
     const [error, setError] =
         useState("");
 
@@ -49,7 +49,7 @@ function StatisticsPage() {
                 setError("");
 
                 // Beide Requests können parallel ausgeführt werden,
-                // weil sie voneinander unabhängig sind.
+                // da sie voneinander unabhängig sind.
                 const [
                     loadedAttempts,
                     loadedScenarios
@@ -58,7 +58,7 @@ function StatisticsPage() {
                     getScenarios()
                 ]);
 
-                // Sicherheitsprüfung.
+                // Prüft, ob das Backend die erwarteten Arrays liefert.
                 if (!Array.isArray(loadedAttempts)) {
                     throw new Error(
                         "Die Trainingsergebnisse sind ungültig."
@@ -71,7 +71,7 @@ function StatisticsPage() {
                     );
                 }
 
-                // Daten in React speichern.
+                // Geladene Daten im React-State speichern.
                 setAttempts(loadedAttempts);
                 setScenarios(loadedScenarios);
 
@@ -95,21 +95,21 @@ function StatisticsPage() {
     // -------------------------------------------------------
 
     const statistics = useMemo(() => {
-        // Gesamtzahl aller Versuche.
+        // Gesamtzahl aller gespeicherten Versuche.
         const totalAttempts =
             attempts.length;
 
-        // Anzahl richtiger Antworten.
+        // Anzahl korrekt beantworteter Versuche.
         const correctAttempts =
             attempts.filter(
                 (attempt) => attempt.isCorrect
             ).length;
 
-        // Anzahl falscher Antworten.
+        // Alle übrigen Versuche sind falsch beantwortet.
         const wrongAttempts =
             totalAttempts - correctAttempts;
 
-        // Erfolgsquote.
+        // Prozentualer Anteil richtiger Antworten.
         const successRate =
             totalAttempts === 0
                 ? 0
@@ -117,8 +117,8 @@ function StatisticsPage() {
                     (correctAttempts / totalAttempts) * 100
                 );
 
-        // Anzahl verschiedener Szenarien,
-        // die mindestens einmal beantwortet wurden.
+        // Bestimmt, wie viele unterschiedliche Szenarien
+        // mindestens einmal beantwortet wurden.
         const uniqueScenarioIds =
             new Set(
                 attempts.map(
@@ -158,14 +158,11 @@ function StatisticsPage() {
             return "Legitim";
         }
 
-        if (answer === "suspicious") {
-            return "Verdächtig";
-        }
-
         if (answer === "phishing") {
             return "Phishing";
         }
 
+        // Fallback für unerwartete Werte aus dem Backend.
         return answer;
     }
 
@@ -226,9 +223,9 @@ function StatisticsPage() {
 
             {/* Kopfbereich */}
             <header className="page-heading">
-        <span className="page-overline">
-          Auswertung
-        </span>
+                <span className="page-overline">
+                    Auswertung
+                </span>
 
                 <h1 className="page-title">
                     Meine Statistik
@@ -248,9 +245,9 @@ function StatisticsPage() {
             <section className="statistics-grid">
 
                 <article className="statistics-card">
-          <span className="statistics-label">
-            Versuche
-          </span>
+                    <span className="statistics-label">
+                        Versuche
+                    </span>
 
                     <strong className="statistics-value">
                         {statistics.totalAttempts}
@@ -259,9 +256,9 @@ function StatisticsPage() {
 
 
                 <article className="statistics-card statistics-card-success">
-          <span className="statistics-label">
-            Richtig
-          </span>
+                    <span className="statistics-label">
+                        Richtig
+                    </span>
 
                     <strong className="statistics-value">
                         {statistics.correctAttempts}
@@ -270,9 +267,9 @@ function StatisticsPage() {
 
 
                 <article className="statistics-card statistics-card-danger">
-          <span className="statistics-label">
-            Falsch
-          </span>
+                    <span className="statistics-label">
+                        Falsch
+                    </span>
 
                     <strong className="statistics-value">
                         {statistics.wrongAttempts}
@@ -281,9 +278,9 @@ function StatisticsPage() {
 
 
                 <article className="statistics-card statistics-card-primary">
-          <span className="statistics-label">
-            Erfolgsquote
-          </span>
+                    <span className="statistics-label">
+                        Erfolgsquote
+                    </span>
 
                     <strong className="statistics-value">
                         {statistics.successRate} %
@@ -292,9 +289,9 @@ function StatisticsPage() {
 
 
                 <article className="statistics-card">
-          <span className="statistics-label">
-            Bearbeitete Szenarien
-          </span>
+                    <span className="statistics-label">
+                        Bearbeitete Szenarien
+                    </span>
 
                     <strong className="statistics-value">
                         {statistics.uniqueScenarios}
@@ -330,9 +327,9 @@ function StatisticsPage() {
                 <section className="statistics-history">
 
                     <div className="statistics-section-heading">
-            <span className="page-overline">
-              Verlauf
-            </span>
+                        <span className="page-overline">
+                            Verlauf
+                        </span>
 
                         <h2>
                             Letzte Antworten
@@ -356,23 +353,23 @@ function StatisticsPage() {
 
                                         <div className="statistics-history-main">
 
-                      <span className="statistics-history-subject">
-                        {scenario?.subject ??
-                            `Szenario #${attempt.scenarioId}`}
-                      </span>
+                                            <span className="statistics-history-subject">
+                                                {scenario?.subject ??
+                                                    `Szenario #${attempt.scenarioId}`}
+                                            </span>
 
                                             <span className="statistics-history-meta">
-                        Deine Antwort:{" "}
+                                                Deine Antwort:{" "}
                                                 <strong>
-                          {formatAnswer(
-                              attempt.selectedAnswer
-                          )}
-                        </strong>
-                      </span>
+                                                    {formatAnswer(
+                                                        attempt.selectedAnswer
+                                                    )}
+                                                </strong>
+                                            </span>
 
                                             <span className="statistics-history-meta">
-                        {attempt.createdAt}
-                      </span>
+                                                {attempt.createdAt}
+                                            </span>
 
                                         </div>
 

@@ -77,6 +77,7 @@ import AdminScenarioPage
 import AdminScenarioListPage
     from "./pages/AdminScenarioListPage.jsx";
 
+import NotFoundPage from "./pages/NotFoundPage.jsx";
 
 function App() {
 
@@ -318,6 +319,10 @@ function App() {
                                     <AdminScenarioPage />
                                 </AdminRoute>
                             }
+                        />
+                        <Route
+                            path="*"
+                            element={<NotFoundPage />}
                         />
 
                     </Routes>

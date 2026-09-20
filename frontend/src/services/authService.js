@@ -1,11 +1,22 @@
-const API_URL = "http://localhost:3000/api/auth";
+import API_BASE_URL from "../config/api.js";
 
+// Alle Authentifizierungs-Endpunkte liegen unter /api/auth.
+const AUTH_API_URL = `${API_BASE_URL}/auth`;
+
+
+/*
+ * Registriert einen neuen Benutzer.
+ */
 export async function registerUser(username, email, password) {
-    const response = await fetch(`${API_URL}/register`, {
+    const response = await fetch(`${AUTH_API_URL}/register`, {
         method: "POST",
+
         headers: {
             "Content-Type": "application/json"
         },
+
+        credentials: "include",
+
         body: JSON.stringify({
             username,
             email,
@@ -24,13 +35,23 @@ export async function registerUser(username, email, password) {
     return data;
 }
 
+
+/*
+ * Meldet einen Benutzer an.
+ *
+ * credentials: "include" sorgt dafür, dass der Session-Cookie
+ * vom Browser gespeichert und bei weiteren Requests verwendet wird.
+ */
 export async function loginUser(email, password) {
-    const response = await fetch(`${API_URL}/login`, {
+    const response = await fetch(`${AUTH_API_URL}/login`, {
         method: "POST",
+
         headers: {
             "Content-Type": "application/json"
         },
+
         credentials: "include",
+
         body: JSON.stringify({
             email,
             password
@@ -48,8 +69,15 @@ export async function loginUser(email, password) {
     return data;
 }
 
+
+/*
+ * Lädt den aktuell angemeldeten Benutzer.
+ *
+ * Eine 401-Antwort bedeutet hier lediglich, dass momentan
+ * keine aktive Anmeldung besteht.
+ */
 export async function getCurrentUser() {
-    const response = await fetch(`${API_URL}/me`, {
+    const response = await fetch(`${AUTH_API_URL}/me`, {
         credentials: "include"
     });
 
@@ -58,19 +86,28 @@ export async function getCurrentUser() {
     }
 
     if (!response.ok) {
-        throw new Error("Benutzer konnte nicht geladen werden.");
+        throw new Error(
+            "Benutzer konnte nicht geladen werden."
+        );
     }
 
     return response.json();
 }
 
+
+/*
+ * Beendet die aktuelle Sitzung.
+ */
 export async function logoutUser() {
-    const response = await fetch(`${API_URL}/logout`, {
+    const response = await fetch(`${AUTH_API_URL}/logout`, {
         method: "POST",
+
         credentials: "include"
     });
 
     if (!response.ok) {
-        throw new Error("Abmeldung fehlgeschlagen.");
+        throw new Error(
+            "Abmeldung fehlgeschlagen."
+        );
     }
 }
