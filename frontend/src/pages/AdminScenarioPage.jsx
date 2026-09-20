@@ -1,17 +1,14 @@
-// React-Hooks für Formularzustand und Laden vorhandener Daten.
 import {
   useEffect,
   useState
 } from "react";
 
-// React Router stellt Navigation und URL-Parameter bereit.
 import {
   Link,
   useNavigate,
   useParams
 } from "react-router-dom";
 
-// Scenario-Service enthält alle Backend-Aufrufe.
 import {
   createScenario,
   getScenarioById,
@@ -19,17 +16,29 @@ import {
 } from "../services/scenarioService.js";
 
 
-// ---------------------------------------------------------
-// Ausgangszustand des Formulars
-// ---------------------------------------------------------
+/*
+ * Alle Trainingsnachrichten werden aus der Perspektive derselben
+ * fiktiven Person dargestellt. Der Wert wird deshalb nicht vom
+ * Administrator verändert.
+ */
+const TRAINING_RECIPIENT =
+    "Max Mustermann <max.mustermann@example.de>";
 
+
+/*
+ * Startwerte für ein neues Szenario.
+ *
+ * Die Anwendung unterscheidet nur noch zwischen:
+ * - legitim
+ * - phishing
+ */
 const initialFormData = {
   senderName: "",
   senderEmail: "",
-  recipient: "",
+  recipient: TRAINING_RECIPIENT,
   subject: "",
   date: "",
-  greeting: "",
+  greeting: "Hallo Max Mustermann,",
   paragraphOne: "",
   paragraphTwo: "",
   actionText: "",
@@ -38,48 +47,79 @@ const initialFormData = {
   signature: "",
   correctAnswer: "phishing",
   explanation: "",
+  clueTarget: "sender",
   clueTitle: "",
   clueDescription: ""
 };
 
 
+/*
+ * Bereiche einer E-Mail, die nach der Beantwortung
+ * hervorgehoben werden können.
+ */
+const clueTargets = [
+  {
+    value: "sender",
+    label: "Absenderadresse"
+  },
+  {
+    value: "subject",
+    label: "Betreff"
+  },
+  {
+    value: "greeting",
+    label: "Anrede"
+  },
+  {
+    value: "paragraph-0",
+    label: "Erster Absatz"
+  },
+  {
+    value: "paragraph-1",
+    label: "Zweiter Absatz"
+  },
+  {
+    value: "link",
+    label: "Link / Aktionsbutton"
+  },
+  {
+    value: "signature",
+    label: "Signatur"
+  }
+];
+
+
 function AdminScenarioPage() {
-  // Liest die ID aus einer URL wie:
-  // /admin/scenarios/5/edit
+  // URL-Parameter, z. B. /admin/scenarios/5/edit.
   const { id } = useParams();
 
-  // Ermöglicht Navigation nach erfolgreichem Speichern.
+  // Navigation nach dem Speichern.
   const navigate = useNavigate();
 
-  // Falls eine ID vorhanden ist, befinden wir uns im Bearbeitungsmodus.
+  // Mit ID: Bearbeiten, ohne ID: neues Szenario.
   const isEditMode = Boolean(id);
 
-  // Enthält alle Eingaben des Formulars.
   const [formData, setFormData] =
       useState(initialFormData);
 
-  // Fehlermeldung für Laden oder Speichern.
-  const [error, setError] = useState("");
+  const [error, setError] =
+      useState("");
 
-  // Erfolgsmeldung nach erfolgreichem Speichern.
-  const [success, setSuccess] = useState("");
+  const [success, setSuccess] =
+      useState("");
 
-  // Verhindert mehrfaches Absenden während eines Requests.
   const [isSubmitting, setIsSubmitting] =
       useState(false);
 
-  // Zeigt beim Bearbeiten einen Ladezustand.
   const [isLoading, setIsLoading] =
       useState(isEditMode);
 
 
   // -------------------------------------------------------
-  // Bestehendes Szenario laden
+  // Vorhandenes Szenario laden
   // -------------------------------------------------------
 
   useEffect(() => {
-    // Beim Erstellen gibt es keine ID.
-    // Deshalb muss nichts geladen werden.
     if (!isEditMode) {
       return;
     }
@@ -88,23 +128,22 @@ function AdminScenarioPage() {
       try {
         setError("");
 
-        // Szenario anhand der ID vom Backend laden.
         const scenario =
             await getScenarioById(id);
 
-        // Das Backend besitzt ein Paragraphen-Array.
-        // Unser Formular verwendet aktuell zwei einzelne Felder.
         const firstParagraph =
             scenario.paragraphs?.[0] ?? "";
 
         const secondParagraph =
             scenario.paragraphs?.[1] ?? "";
 
-        // Die Oberfläche unterstützt derzeit einen Hinweis.
+        /*
+         * Das aktuelle Adminformular bearbeitet einen Hinweis.
+         * Existieren mehrere Hinweise, wird der erste geladen.
+         */
         const firstClue =
             scenario.clues?.[0] ?? null;
 
-        // Backend-Daten in das Formular übertragen.
         setFormData({
           senderName:
               scenario.senderName ?? "",
@@ -112,8 +151,12 @@ function AdminScenarioPage() {
           senderEmail:
               scenario.senderEmail ?? "",
 
+          /*
+           * Der Empfänger bleibt unabhängig von alten Daten
+           * immer die fest definierte Trainingsperson.
+           */
           recipient:
-              scenario.recipient ?? "",
+          TRAINING_RECIPIENT,
 
           subject:
               scenario.subject ?? "",
@@ -122,7 +165,8 @@ function AdminScenarioPage() {
               scenario.date ?? "",
 
           greeting:
-              scenario.greeting ?? "",
+              scenario.greeting ??
+              "Hallo Max Mustermann,",
 
           paragraphOne:
           firstParagraph,
@@ -143,10 +187,15 @@ function AdminScenarioPage() {
               scenario.signature ?? "",
 
           correctAnswer:
-              scenario.correctAnswer ?? "phishing",
+              scenario.correctAnswer === "legitim"
+                  ? "legitim"
+                  : "phishing",
 
           explanation:
               scenario.explanation ?? "",
+
+          clueTarget:
+              firstClue?.id ?? "sender",
 
           clueTitle:
               firstClue?.title ?? "",
@@ -154,6 +203,7 @@ function AdminScenarioPage() {
           clueDescription:
               firstClue?.description ?? ""
         });
+
       } catch (loadError) {
         setError(
             loadError instanceof Error
@@ -166,22 +216,30 @@ function AdminScenarioPage() {
     }
 
     loadScenario();
-  }, [id, isEditMode]);
+  }, [
+    id,
+    isEditMode
+  ]);
 
 
   // -------------------------------------------------------
-  // Formularfelder aktualisieren
+  // Formularwerte aktualisieren
   // -------------------------------------------------------
 
   function handleChange(event) {
-    // Name entspricht dem Feldnamen,
-    // value dem aktuellen Inhalt.
     const {
       name,
       value
     } = event.target;
 
-    // Nur das geänderte Feld wird aktualisiert.
+    /*
+     * Der Empfänger wird nicht über handleChange verändert.
+     * Das entsprechende Feld ist zusätzlich readOnly.
+     */
+    if (name === "recipient") {
+      return;
+    }
+
     setFormData((currentData) => ({
       ...currentData,
       [name]: value
@@ -190,11 +248,10 @@ function AdminScenarioPage() {
 
 
   // -------------------------------------------------------
-  // Formular zurücksetzen
+  // Neues Formular zurücksetzen
   // -------------------------------------------------------
 
   function handleReset() {
-    // Beim Erstellen kann das Formular vollständig geleert werden.
     if (!isEditMode) {
       setFormData(initialFormData);
       setError("");
@@ -208,23 +265,46 @@ function AdminScenarioPage() {
   // -------------------------------------------------------
 
   async function handleSubmit(event) {
-    // Verhindert das normale Neuladen der HTML-Seite.
     event.preventDefault();
 
     setError("");
     setSuccess("");
     setIsSubmitting(true);
 
-
-    // Leere Absätze werden entfernt.
+    // Leere Absätze werden nicht an das Backend gesendet.
     const paragraphs = [
       formData.paragraphOne.trim(),
       formData.paragraphTwo.trim()
     ].filter(Boolean);
 
+    /*
+     * Ein Hinweis wird nur gespeichert, wenn Titel und Beschreibung
+     * ausgefüllt wurden. So entstehen keine leeren Clues.
+     */
+    const clues =
+        formData.clueTitle.trim() &&
+        formData.clueDescription.trim()
+            ? [
+              {
+                id:
+                formData.clueTarget,
 
-    // Formularstruktur wird in die Struktur umgewandelt,
-    // die unsere REST-API erwartet.
+                title:
+                    formData.clueTitle.trim(),
+
+                description:
+                    formData.clueDescription.trim()
+              }
+            ]
+            : [];
+
+    /*
+     * Formulardaten werden in das Datenformat der REST-API
+     * übersetzt.
+     *
+     * Der Empfänger wird bewusst aus der Konstante übernommen
+     * und nicht aus dem Formularzustand.
+     */
     const scenario = {
       senderName:
           formData.senderName.trim(),
@@ -233,7 +313,7 @@ function AdminScenarioPage() {
           formData.senderEmail.trim(),
 
       recipient:
-          formData.recipient.trim(),
+      TRAINING_RECIPIENT,
 
       subject:
           formData.subject.trim(),
@@ -264,23 +344,10 @@ function AdminScenarioPage() {
       explanation:
           formData.explanation.trim(),
 
-      clues: [
-        {
-          // Beim Speichern wird eine eindeutige Hinweis-ID erzeugt.
-          id: `clue-${Date.now()}`,
-
-          title:
-              formData.clueTitle.trim(),
-
-          description:
-              formData.clueDescription.trim()
-        }
-      ]
+      clues
     };
 
-
     try {
-      // Im Bearbeitungsmodus wird PUT verwendet.
       if (isEditMode) {
         const updatedScenario =
             await updateScenario(
@@ -292,7 +359,6 @@ function AdminScenarioPage() {
             `Das Szenario „${updatedScenario.subject}“ wurde aktualisiert.`
         );
       } else {
-        // Ohne ID wird ein neues Szenario per POST erstellt.
         const createdScenario =
             await createScenario(scenario);
 
@@ -300,13 +366,12 @@ function AdminScenarioPage() {
             `Das Szenario „${createdScenario.subject}“ wurde gespeichert.`
         );
 
-        // Nach dem Erstellen kann das Formular geleert werden.
         setFormData(initialFormData);
       }
 
-      // Nach kurzer erfolgreicher Verarbeitung
-      // wechseln wir zurück zur Szenarioübersicht.
-      navigate("/admin/scenarios");
+      navigate(
+          "/admin/scenarios"
+      );
 
     } catch (submitError) {
       setError(
@@ -321,7 +386,7 @@ function AdminScenarioPage() {
 
 
   // -------------------------------------------------------
-  // Ladezustand beim Bearbeiten
+  // Ladezustand
   // -------------------------------------------------------
 
   if (isLoading) {
@@ -342,7 +407,6 @@ function AdminScenarioPage() {
   return (
       <main className="page-container">
 
-        {/* Überschrift passt sich an Neu/Bearbeiten an. */}
         <header className="page-heading">
         <span className="page-overline">
           Administration
@@ -364,7 +428,6 @@ function AdminScenarioPage() {
 
         <section className="surface-card admin-form-card">
 
-          {/* Backend- oder Validierungsfehler anzeigen. */}
           {error && (
               <div
                   className="alert alert-danger"
@@ -374,7 +437,6 @@ function AdminScenarioPage() {
               </div>
           )}
 
-          {/* Erfolg nach dem Speichern anzeigen. */}
           {success && (
               <div
                   className="alert alert-success"
@@ -413,11 +475,13 @@ function AdminScenarioPage() {
               />
 
               <FormField
-                  label="Empfängeradresse"
+                  label="Empfänger"
                   name="recipient"
-                  type="email"
-                  value={formData.recipient}
+                  type="text"
+                  value={TRAINING_RECIPIENT}
                   onChange={handleChange}
+                  readOnly
+                  helpText="Der Empfänger ist für alle Trainingsszenarien fest auf Max Mustermann gesetzt."
               />
 
               <FormField
@@ -425,7 +489,7 @@ function AdminScenarioPage() {
                   name="date"
                   value={formData.date}
                   onChange={handleChange}
-                  placeholder="Heute, 14:30"
+                  placeholder="15.01.2027, 14:30"
               />
 
             </div>
@@ -451,7 +515,7 @@ function AdminScenarioPage() {
                 name="greeting"
                 value={formData.greeting}
                 onChange={handleChange}
-                placeholder="Guten Tag,"
+                placeholder="Hallo Max Mustermann,"
             />
 
             <TextAreaField
@@ -474,12 +538,12 @@ function AdminScenarioPage() {
                 name="signature"
                 value={formData.signature}
                 onChange={handleChange}
-                placeholder="Ihr Sicherheitsteam"
+                placeholder="Ihr Kundenservice"
             />
 
 
             {/* ------------------------------------------------ */}
-            {/* Links */}
+            {/* Link */}
             {/* ------------------------------------------------ */}
 
             <h2 className="h4 mt-5 mb-4">
@@ -545,10 +609,6 @@ function AdminScenarioPage() {
                   Legitim
                 </option>
 
-                <option value="suspicious">
-                  Verdächtig
-                </option>
-
                 <option value="phishing">
                   Phishing
                 </option>
@@ -573,11 +633,42 @@ function AdminScenarioPage() {
               Hinweis
             </h2>
 
+            <div className="mb-3">
+              <label
+                  className="form-label"
+                  htmlFor="clueTarget"
+              >
+                Hervorgehobene Stelle
+              </label>
+
+              <select
+                  className="form-select"
+                  id="clueTarget"
+                  name="clueTarget"
+                  value={formData.clueTarget}
+                  onChange={handleChange}
+              >
+                {clueTargets.map((target) => (
+                    <option
+                        key={target.value}
+                        value={target.value}
+                    >
+                      {target.label}
+                    </option>
+                ))}
+              </select>
+
+              <small className="form-text">
+                Nach der Antwort wird dieser Bereich in der Trainingsmail hervorgehoben.
+              </small>
+            </div>
+
             <FormField
                 label="Titel des Hinweises"
                 name="clueTitle"
                 value={formData.clueTitle}
                 onChange={handleChange}
+                required={false}
             />
 
             <TextAreaField
@@ -585,6 +676,7 @@ function AdminScenarioPage() {
                 name="clueDescription"
                 value={formData.clueDescription}
                 onChange={handleChange}
+                required={false}
             />
 
 
@@ -601,9 +693,6 @@ function AdminScenarioPage() {
                 Zurück
               </Link>
 
-
-              {/* Beim Bearbeiten soll man nicht versehentlich
-                die geladenen Daten komplett löschen. */}
               {!isEditMode && (
                   <button
                       className="btn btn-secondary"
@@ -613,7 +702,6 @@ function AdminScenarioPage() {
                     Formular leeren
                   </button>
               )}
-
 
               <button
                   className="btn btn-primary"
@@ -630,7 +718,9 @@ function AdminScenarioPage() {
             </div>
 
           </form>
+
         </section>
+
       </main>
   );
 }
@@ -647,12 +737,13 @@ function FormField({
                      onChange,
                      type = "text",
                      placeholder = "",
-                     required = true
+                     required = true,
+                     readOnly = false,
+                     helpText = ""
                    }) {
   return (
       <div className="mb-3">
 
-        {/* Label beschreibt das Eingabefeld. */}
         <label
             className="form-label"
             htmlFor={name}
@@ -660,8 +751,6 @@ function FormField({
           {label}
         </label>
 
-        {/* Controlled Input:
-          Der Wert wird vollständig durch React gesteuert. */}
         <input
             className="form-control"
             id={name}
@@ -671,7 +760,14 @@ function FormField({
             onChange={onChange}
             placeholder={placeholder}
             required={required}
+            readOnly={readOnly}
         />
+
+        {helpText && (
+            <small className="form-text">
+              {helpText}
+            </small>
+        )}
 
       </div>
   );
@@ -712,5 +808,6 @@ function TextAreaField({
       </div>
   );
 }
+
 
 export default AdminScenarioPage;

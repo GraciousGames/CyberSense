@@ -1,11 +1,13 @@
-// React Router stellt die clientseitige Navigation bereit.
+// React Router für clientseitige Navigation.
 import {
     BrowserRouter,
+    Navigate,
     Route,
     Routes
 } from "react-router-dom";
 
-// React-Hooks für Benutzerzustand und Initialisierung.
+
+// React-Hooks für Login-Zustand und Session-Wiederherstellung.
 import {
     useEffect,
     useState
@@ -19,67 +21,93 @@ import {
 } from "./services/authService.js";
 
 
-// Route Guard:
-// Kontrolliert, ob ein Benutzer Adminrechte besitzt.
-import AdminRoute from "./components/AdminRoute.jsx";
+// Admin Route Guard.
+import AdminRoute
+    from "./components/AdminRoute.jsx";
 
 
-// Globale Layout-Komponenten.
-import Navbar from "./components/Navbar.jsx";
-import Footer from "./components/Footer.jsx";
+// Globale Komponenten.
+import Navbar
+    from "./components/Navbar.jsx";
+
+import Footer
+    from "./components/Footer.jsx";
 
 
 // Öffentliche Seiten.
-import HomePage from "./pages/HomePage.jsx";
-import TrainingPage from "./pages/TrainingPage.jsx";
-import LoginPage from "./pages/LoginPage.jsx";
-import RegisterPage from "./pages/RegisterPage.jsx";
+import HomePage
+    from "./pages/HomePage.jsx";
+
+import TrainingPage
+    from "./pages/TrainingPage.jsx";
+
+import LoginPage
+    from "./pages/LoginPage.jsx";
+
+import RegisterPage
+    from "./pages/RegisterPage.jsx";
+
+
+// Statistik.
+import StatisticsPage
+    from "./pages/StatisticsPage.jsx";
 
 
 // Administrationsseiten.
-import AdminPage from "./pages/AdminPage.jsx";
-import AdminScenarioPage from "./pages/AdminScenarioPage.jsx";
-import AdminScenarioListPage from "./pages/AdminScenarioListPage.jsx";
+import AdminPage
+    from "./pages/AdminPage.jsx";
+
+import AdminScenarioPage
+    from "./pages/AdminScenarioPage.jsx";
+
+import AdminScenarioListPage
+    from "./pages/AdminScenarioListPage.jsx";
 
 
 function App() {
-    // Enthält den aktuell angemeldeten Benutzer.
-    // null bedeutet: kein Benutzer angemeldet.
-    const [user, setUser] = useState(null);
 
-    // Während die bestehende Session geprüft wird,
-    // soll der Route Guard noch keine Entscheidung treffen.
-    const [authLoading, setAuthLoading] =
-        useState(true);
+    // Aktuell eingeloggter Benutzer.
+    const [user, setUser] =
+        useState(null);
+
+
+    // Zeigt an,
+    // ob die Session beim Start noch geprüft wird.
+    const [
+        authLoading,
+        setAuthLoading
+    ] = useState(true);
 
 
     // -------------------------------------------------------
-    // Bestehende Session beim Start wiederherstellen
+    // Bestehende Session wiederherstellen
     // -------------------------------------------------------
 
     useEffect(() => {
+
         async function loadUser() {
+
             try {
-                // Backend fragt anhand des Session-Cookies,
-                // ob bereits ein Benutzer angemeldet ist.
+
+                // Aktuellen Benutzer vom Backend laden.
                 const currentUser =
                     await getCurrentUser();
 
-                // Benutzer im globalen App-State speichern.
+                // Benutzerzustand speichern.
                 setUser(currentUser);
+
             } finally {
-                // Session-Prüfung ist abgeschlossen.
+
+                // Session-Prüfung abgeschlossen.
                 setAuthLoading(false);
             }
         }
 
+
         loadUser();
+
     }, []);
 
-
-    // -------------------------------------------------------
-    // Anwendung
-    // -------------------------------------------------------
 
     return (
         <BrowserRouter>
@@ -91,10 +119,11 @@ function App() {
                     user={user}
 
                     onLogout={async () => {
-                        // Session auf dem Backend beenden.
+
+                        // Backend-Session beenden.
                         await logoutUser();
 
-                        // Benutzer auch aus dem Frontend-State entfernen.
+                        // Frontend-Zustand zurücksetzen.
                         setUser(null);
                     }}
                 />
@@ -102,22 +131,31 @@ function App() {
 
                 <div className="app-content">
 
-                    {/* Hier werden alle URL-Routen der Anwendung definiert. */}
                     <Routes>
 
-                        {/* ----------------------------- */}
+                        {/* ------------------------------------------- */}
                         {/* Öffentliche Seiten */}
-                        {/* ----------------------------- */}
+                        {/* ------------------------------------------- */}
 
                         <Route
                             path="/"
-                            element={<HomePage />}
+                            element={
+                                <HomePage />
+                            }
                         />
 
+
+                        {/* Training funktioniert auch ohne Anmeldung.
+                Eingeloggte Benutzer speichern Attempts. */}
                         <Route
                             path="/training"
-                            element={<TrainingPage />}
+                            element={
+                                <TrainingPage
+                                    user={user}
+                                />
+                            }
                         />
+
 
                         <Route
                             path="/login"
@@ -128,15 +166,55 @@ function App() {
                             }
                         />
 
+
                         <Route
                             path="/register"
-                            element={<RegisterPage />}
+                            element={
+                                <RegisterPage />
+                            }
                         />
 
 
-                        {/* ----------------------------- */}
-                        {/* Admin-Dashboard */}
-                        {/* ----------------------------- */}
+                        {/* ------------------------------------------- */}
+                        {/* Persönliche Statistik */}
+                        {/* ------------------------------------------- */}
+
+                        <Route
+                            path="/statistics"
+                            element={
+
+                                // Während die Session geladen wird,
+                                // zeigen wir noch keine Weiterleitung.
+                                authLoading
+                                    ? (
+                                        <main className="page-container">
+                                            <p>
+                                                Benutzer wird geladen …
+                                            </p>
+                                        </main>
+                                    )
+
+                                    // Ohne Login geht es zur Login-Seite.
+                                    : !user
+                                        ? (
+                                            <Navigate
+                                                to="/login"
+                                                replace
+                                            />
+                                        )
+
+                                        // Eingeloggte Benutzer dürfen
+                                        // ihre Statistik sehen.
+                                        : (
+                                            <StatisticsPage />
+                                        )
+                            }
+                        />
+
+
+                        {/* ------------------------------------------- */}
+                        {/* Admin Dashboard */}
+                        {/* ------------------------------------------- */}
 
                         <Route
                             path="/admin"
@@ -151,9 +229,9 @@ function App() {
                         />
 
 
-                        {/* ----------------------------- */}
-                        {/* Liste aller Szenarien */}
-                        {/* ----------------------------- */}
+                        {/* ------------------------------------------- */}
+                        {/* Scenario-Verwaltung */}
+                        {/* ------------------------------------------- */}
 
                         <Route
                             path="/admin/scenarios"
@@ -168,10 +246,7 @@ function App() {
                         />
 
 
-                        {/* ----------------------------- */}
                         {/* Neues Szenario erstellen */}
-                        {/* ----------------------------- */}
-
                         <Route
                             path="/admin/scenarios/new"
                             element={
@@ -185,11 +260,7 @@ function App() {
                         />
 
 
-                        {/* ----------------------------- */}
                         {/* Bestehendes Szenario bearbeiten */}
-                        {/* :id wird später mit useParams() gelesen. */}
-                        {/* ----------------------------- */}
-
                         <Route
                             path="/admin/scenarios/:id/edit"
                             element={
@@ -207,7 +278,7 @@ function App() {
                 </div>
 
 
-                {/* Footer wird auf allen Seiten angezeigt. */}
+                {/* Footer auf allen Seiten */}
                 <Footer />
 
             </div>
@@ -215,5 +286,6 @@ function App() {
         </BrowserRouter>
     );
 }
+
 
 export default App;
