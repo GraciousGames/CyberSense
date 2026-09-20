@@ -1,8 +1,12 @@
 # CyberSense
 
-CyberSense is an interactive full-stack web application that raises awareness of phishing, social engineering, and email security. Using realistic training messages, users learn how to identify common attack patterns and assess emails correctly.
+CyberSense is an interactive full-stack web application for phishing awareness and email security training.
 
-The project is being developed as part of the **Web Programming** module at **HAW Hamburg**.
+Users are presented with realistic email scenarios and decide whether a message is **legitimate** or **phishing**. After each decision, CyberSense provides immediate feedback, explains the correct classification, and highlights relevant clues within the message.
+
+The project was developed as part of the **Web Programming** module at **HAW Hamburg**.
+
+---
 
 ## Project Information
 
@@ -18,57 +22,113 @@ The project is being developed as part of the **Web Programming** module at **HA
 
 | Name | Student ID |
 |---|---|
-| Grace Gehlisch | xxxxxxx |
-| Clemens ... | xxxxxxx |
-| Marcel ... | xxxxxxx |
+| Grace Gehlisch | *****29 |
+| Clemens Lampen | *****38 |
+| Marcel Brauns | *****03 |
+
+---
 
 ## Project Goal
 
-CyberSense teaches users how to handle suspicious emails safely. The training scenarios cover topics such as:
+Phishing emails often imitate legitimate companies and services and can be difficult to identify at first glance.
 
-- manipulated sender addresses
-- fake or mismatched links
-- artificial time pressure
-- social engineering
-- fake invoices and unexpected payment requests
+CyberSense provides a safe environment in which users can practice evaluating realistic messages without interacting with real emails or external services.
+
+Training scenarios include indicators such as:
+
+- manipulated or unusual sender addresses
+- misleading or mismatched links
+- artificial urgency and time pressure
+- social engineering techniques
+- fake account or security warnings
+- unexpected payment requests
 - parcel delivery scams
+- impersonation of known companies and services
 
-After each assessment, learners receive immediate feedback, an explanation, and specific clues pointing out suspicious characteristics.
+For every scenario, the user decides between:
 
-## Current Features
+- **Legitimate**
+- **Phishing**
 
-### Implemented
+After submitting an answer, CyberSense explains the result and provides clues that help users understand which parts of the message are relevant to the classification.
 
-- React frontend using Vite and React Router
-- responsive user interface
-- home page, navigation, and footer
-- interactive phishing training
-- loading training scenarios through a REST API
-- classification as legitimate, suspicious, or phishing
-- score and progress display
-- immediate feedback and expandable clues
-- Express backend with a health check
-- SQLite database containing scenarios and related clues
-- automatic database initialization and seeding
-- API endpoints for retrieving all scenarios or a single scenario
-- complete CRUD API for validated training scenarios
-- user interfaces for login, registration, and administration
-- administration interface for creating, viewing, editing, and deleting scenarios
+---
 
-### Partially Implemented
+## Features
 
-- Login and registration are currently frontend prototypes and are not connected to the backend.
-- The administration area does not have access control yet.
+### Interactive Phishing Training
 
-### Planned
+CyberSense provides realistic email scenarios through an interactive training interface.
 
-- user management and roles
-- server-side registration and login
-- password hashing and secure authentication
-- storage of training progress and results
-- personal and administrative statistics
-- additional frontend and HTTP-level API tests
-- application deployment
+Users can:
+
+- inspect the sender, subject, message content, and links
+- classify messages as legitimate or phishing
+- receive immediate feedback
+- view explanations for the correct classification
+- reveal relevant clues within the email
+- continue through multiple training scenarios
+
+---
+
+### Authentication
+
+CyberSense includes server-side user authentication.
+
+Users can:
+
+- create an account
+- log in
+- remain authenticated through a server-side session
+- log out
+
+Passwords are hashed before being stored in the database.
+
+Authentication is also used to associate training attempts with individual users.
+
+---
+
+### Personal Statistics
+
+Authenticated users can review their training results on a personal statistics page.
+
+The statistics include information such as:
+
+- total training attempts
+- correct answers
+- incorrect answers
+- success rate
+- completed scenarios
+- recent training attempts
+
+Training results are stored persistently in the SQLite database.
+
+---
+
+### Administration
+
+CyberSense contains a protected administration area.
+
+Administrators can:
+
+- view existing scenarios
+- create new scenarios
+- edit existing scenarios
+- delete scenarios
+
+Administrative API endpoints are protected on the server and require an authenticated user with the `admin` role.
+
+The administration dashboard also visualizes possible future extensions such as user management and aggregated administrative statistics. These functions are not part of the current implementation.
+
+---
+
+### Error Handling
+
+The application includes handling for invalid routes and API errors.
+
+Unknown frontend routes lead to a custom `404` page instead of an empty or broken application state.
+
+---
 
 ## Technologies
 
@@ -77,93 +137,188 @@ After each assessment, learners receive immediate feedback, an explanation, and 
 - React 19
 - Vite
 - React Router
-- custom CSS; Bootstrap is installed as a dependency but has not been integrated yet
 - Fetch API
+- custom CSS
 
 ### Backend
 
 - Node.js
 - Express 5
+- express-session
 - CORS
-- SQLite through the Node.js `node:sqlite` module
+- SQLite using the Node.js `node:sqlite` module
+- password hashing for authentication
 
-### Development
+### Development and Quality Assurance
 
-- Git and GitHub
+- Git
+- GitHub
 - ESLint
 - Nodemon
+- Node.js Test Runner
+- Supertest
+
+---
 
 ## Architecture
 
-The frontend and backend are separated and communicate through a REST API.
+CyberSense uses a separated frontend and backend architecture.
 
 ```text
-React pages and components
-          |
-          v
-    Frontend service
-          |
-       REST/JSON
-          |
-          v
-     Express routes
-          |
-          v
-       Repository
-          |
-          v
-         SQLite
+        React Frontend
+              |
+              v
+      Frontend Services
+              |
+          REST / JSON
+              |
+              v
+       Express Backend
+              |
+        Routes / Auth
+              |
+              v
+         Repositories
+              |
+              v
+            SQLite
 ```
 
-The frontend is divided into reusable components, pages, services, and styles. In the backend, HTTP routes, database access, initialization, and seed data are organized separately. Further separation into controllers and services is planned as the application grows.
+The frontend is organized into reusable pages, components, services, configuration, and styles.
+
+The backend separates HTTP routes, authentication middleware, database access, database initialization, repositories, and seed data.
+
+The frontend communicates with the backend exclusively through the REST API.
+
+---
 
 ## Data Model
 
-The SQLite database currently contains two tables:
+CyberSense stores application data in SQLite.
 
-- `scenarios`: content, sender information, classification, and explanation of a training message
-- `clues`: clues associated with a scenario
+The main entities are:
 
-A scenario can have multiple clues. `clues.scenario_id` references `scenarios.id` as a foreign key. When a scenario is deleted, its related clues are removed through `ON DELETE CASCADE` as well.
+### `users`
 
-The database file is created at `backend/database/cybersense.sqlite` when the backend starts for the first time. If the scenarios table is empty, the example scenarios from `backend/src/data/scenarios.js` are inserted.
+Stores registered users and authentication-related information, including the user's role.
+
+### `scenarios`
+
+Stores the content and classification of training messages.
+
+Each scenario contains information such as:
+
+- sender
+- recipient
+- subject
+- message content
+- displayed and actual URLs
+- correct classification
+- explanation
+
+The valid classifications are:
+
+```text
+legitim
+phishing
+```
+
+### `clues`
+
+Stores clues associated with individual scenarios.
+
+A scenario can contain multiple clues. When a scenario is deleted, its associated clues are removed through the configured foreign-key relationship.
+
+### `attempts`
+
+Stores training attempts made by authenticated users.
+
+An attempt connects:
+
+- a user
+- a scenario
+- the selected answer
+- the result of the answer
+- the time of the attempt
+
+This data is used to generate the personal statistics page.
+
+---
+
+## Database Initialization
+
+The SQLite database is created automatically when the backend starts.
+
+The development database is stored at:
+
+```text
+backend/database/cybersense.sqlite
+```
+
+The database file itself is not versioned in Git.
+
+Database initialization creates the required tables automatically.
+
+If no scenarios exist yet, the predefined training scenarios from:
+
+```text
+backend/src/data/scenarios.js
+```
+
+are inserted into the database.
+
+A separate SQLite database is used when running automated tests.
+
+---
 
 ## Project Structure
 
 ```text
 CyberSense/
+├── backend/
+│   ├── database/
+│   ├── src/
+│   │   ├── data/
+│   │   ├── database/
+│   │   ├── middleware/
+│   │   ├── repositories/
+│   │   ├── routes/
+│   │   └── app.js
+│   ├── test/
+│   └── package.json
+│
 ├── frontend/
 │   ├── public/
 │   ├── src/
 │   │   ├── assets/
 │   │   ├── components/
+│   │   ├── config/
 │   │   ├── pages/
 │   │   ├── services/
 │   │   ├── styles/
 │   │   ├── App.jsx
 │   │   └── main.jsx
+│   ├── .env.example
 │   └── package.json
-├── backend/
-│   ├── src/
-│   │   ├── data/
-│   │   ├── database/
-│   │   ├── repositories/
-│   │   ├── routes/
-│   │   └── app.js
-│   └── package.json
+│
+├── .gitignore
 ├── CONTRIBUTING.md
 └── README.md
 ```
+
+---
 
 ## Installation and Setup
 
 ### Requirements
 
+The following software is required:
+
 - Git
-- a recent Node.js version with support for `node:sqlite`
+- Node.js with support for `node:sqlite`
 - npm
 
-> Depending on the Node.js version, `node:sqlite` may still be marked as experimental.
+---
 
 ### Clone the Repository
 
@@ -172,102 +327,244 @@ git clone https://github.com/GraciousGames/CyberSense.git
 cd CyberSense
 ```
 
-### Start the Backend
+---
+
+### Backend Setup
+
+Install the backend dependencies:
 
 ```bash
 cd backend
 npm install
+```
+
+Start the development server:
+
+```bash
 npm run dev
 ```
 
-The backend is then available at `http://localhost:3000`.
+The backend is available locally at:
 
-### Start the Frontend
+```text
+http://localhost:3000
+```
 
-In a second terminal:
+The database is initialized automatically when the backend starts.
+
+---
+
+### Frontend Setup
+
+Open another terminal and install the frontend dependencies:
 
 ```bash
 cd frontend
 npm install
+```
+
+Start the frontend:
+
+```bash
 npm run dev
 ```
 
-The frontend is then available at `http://localhost:5173` by default.
+Vite normally provides the frontend at:
 
-Both the frontend and backend must be running for the training to work. The addresses `http://localhost:5173` and `http://localhost:3000` are currently configured directly in the source code.
+```text
+http://localhost:5173
+```
+
+Both frontend and backend must be running when developing CyberSense locally.
+
+---
+
+## Configuration
+
+The frontend API URL can be configured through the environment variable:
+
+```env
+VITE_API_BASE_URL=http://localhost:3000/api
+```
+
+An example configuration is provided in:
+
+```text
+frontend/.env.example
+```
+
+If no environment variable is configured during local development, the frontend uses the local backend URL as its fallback.
+
+### Session Secret
+
+The backend supports configuration of the session secret through:
+
+```env
+SESSION_SECRET=your-secret
+```
+
+For local development, a development fallback is available.
+
+For a production environment, `SESSION_SECRET` should be explicitly configured instead of relying on the development fallback.
+
+Environment files and secrets are excluded from version control.
+
+---
 
 ## REST API
 
-| Method | Endpoint | Description | Status |
-|---|---|---|---|
-| `GET` | `/api/health` | Retrieve the backend status | implemented |
-| `GET` | `/api/scenarios` | Retrieve all training scenarios | implemented |
-| `GET` | `/api/scenarios/:id` | Retrieve a single scenario | implemented |
-| `POST` | `/api/scenarios` | Create a new scenario | implemented |
-| `PUT` | `/api/scenarios/:id` | Replace an existing scenario | implemented |
-| `DELETE` | `/api/scenarios/:id` | Delete a scenario and its clues | implemented |
+### Health
 
-### Example
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/api/health` | Retrieve backend status |
 
-```bash
-curl http://localhost:3000/api/scenarios/1
-```
+### Authentication
 
-Invalid IDs result in `400 Bad Request`, while scenarios that do not exist result in `404 Not Found`.
+| Method | Endpoint | Description |
+|---|---|---|
+| `POST` | `/api/auth/register` | Register a user |
+| `POST` | `/api/auth/login` | Log in |
+| `POST` | `/api/auth/logout` | Log out |
+| `GET` | `/api/auth/me` | Retrieve the current authenticated user |
 
-## Quality Assurance
+### Scenarios
 
-The frontend provides the following scripts:
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/api/scenarios` | Retrieve all training scenarios |
+| `GET` | `/api/scenarios/:id` | Retrieve a single scenario |
+| `POST` | `/api/scenarios` | Create a scenario as an administrator |
+| `PUT` | `/api/scenarios/:id` | Update a scenario as an administrator |
+| `DELETE` | `/api/scenarios/:id` | Delete a scenario as an administrator |
 
-```bash
-cd frontend
-npm run lint
-npm run build
-```
+Administrative scenario operations require an authenticated user with the `admin` role.
 
-The backend CRUD tests use a temporary SQLite database:
+### Training Attempts
+
+Training attempts are stored through the attempts API.
+
+Authenticated users can submit training results and retrieve their own previous attempts. The frontend uses this data to calculate and display personal statistics.
+
+---
+
+## Testing and Quality Assurance
+
+### Backend Tests
+
+The backend contains automated API tests for:
+
+- authentication
+- scenario endpoints
+- administrative access control
+- validation
+- training attempts
+- persistence behavior
+
+Run the test suite with:
 
 ```bash
 cd backend
 npm test
 ```
 
-## Security and Known Limitations
+Tests use a separate SQLite test database so that the development database is not modified.
 
-- Login and registration do not store user accounts yet.
-- Passwords are currently neither transmitted nor stored or hashed.
-- Administration pages are publicly accessible and are not protected by roles yet.
-- CORS currently permits only the local frontend address.
-- API and port settings cannot be configured through environment variables yet.
-- Server-side validation, rate limiting, and centralized error handling still need to be added.
-- There is no deployment configuration yet.
+---
+
+### Frontend
+
+Check the frontend source code with:
+
+```bash
+cd frontend
+npm run lint
+```
+
+Create a production build with:
+
+```bash
+npm run build
+```
+
+The generated `dist` directory is excluded from version control.
+
+---
+
+## Security Measures
+
+CyberSense implements several security-related measures within the scope of the project:
+
+- passwords are stored as hashes instead of plain text
+- authentication uses server-side sessions
+- administrative endpoints require authentication and the `admin` role
+- protected operations are checked by the backend and not only by the frontend
+- scenario input is validated by the backend
+- scenario classifications are restricted to `legitim` and `phishing`
+- environment files and secrets are excluded from Git
+- SQLite database files are excluded from Git
+- session and test cookie files are excluded from Git
+
+CyberSense is an educational university project and should not be considered a production-ready authentication or security platform.
+
+---
+
+## Future Work
+
+The current version focuses on the complete training workflow, authentication, personal statistics, and scenario administration.
+
+Possible future extensions include:
+
+- administration of registered users and roles
+- aggregated statistics for administrators
+- more detailed training analytics
+- additional phishing scenarios
+- scenario categories and difficulty levels
+- improved management of multiple clues in the scenario editor
+- additional automated frontend tests
+- further accessibility improvements
+- extended security hardening for a production environment
+
+Some of these future extensions are already represented visually in the administration dashboard but are not implemented in the current version.
+
+---
 
 ## Git Workflow
 
-Development uses the following branches:
+Development uses the following branch structure:
 
-- `main`: stable project version
-- `dev`: shared development version
-- `feature/<feature-name>`: implementation of individual features
+- `main` – stable project version
+- `dev` – shared development version
+- `feature/<feature-name>` – development of individual features
 
-Further information about branches, commits, and pull requests is available in [CONTRIBUTING.md](CONTRIBUTING.md).
+Additional information about the development workflow is available in [CONTRIBUTING.md](CONTRIBUTING.md).
+
+---
 
 ## Project Status
 
 | Area | Status |
 |---|---|
-| React frontend | ✅ implemented |
-| Navigation and responsive design | ✅ implemented |
-| Interactive training | ✅ implemented |
-| Express backend | ✅ implemented |
-| Read-only REST API | ✅ implemented |
-| SQLite database | ✅ implemented |
-| Administration CRUD | ✅ implemented |
-| Authentication | ⏳ planned |
-| Training progress and statistics | ⏳ planned |
-| Backend CRUD tests | ✅ implemented |
-| Deployment | ⏳ planned |
+| React frontend | ✅ Implemented |
+| Responsive user interface | ✅ Implemented |
+| Interactive phishing training | ✅ Implemented |
+| Express backend | ✅ Implemented |
+| SQLite persistence | ✅ Implemented |
+| Registration and login | ✅ Implemented |
+| Session authentication | ✅ Implemented |
+| Role-based administration | ✅ Implemented |
+| Scenario CRUD | ✅ Implemented |
+| Training result persistence | ✅ Implemented |
+| Personal statistics | ✅ Implemented |
+| Automated backend tests | ✅ Implemented |
+| Custom error page | ✅ Implemented |
+| User administration | 🔜 Future work |
+| Administrative statistics | 🔜 Future work |
 
-## License
+---
 
-This project was developed exclusively for educational purposes as part of the **Web Programming** module at **HAW Hamburg**.
+## Educational Context
+
+CyberSense was developed exclusively for educational purposes as part of the **Web Programming** module in the B.Sc. Media Informatics program at **HAW Hamburg**.
+
+The email scenarios are prepared training examples. CyberSense does not access or analyze a user's real email account.
