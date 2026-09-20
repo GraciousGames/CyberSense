@@ -22,9 +22,9 @@ The project was developed as part of the **Web Programming** module at **HAW Ham
 
 | Name | Student ID |
 |---|---|
-| Grace Gehlisch | 2761929 |
-| Clemens Lampen | 2574938 |
-| Marcel Brauns | 2714503 |
+| Grace Gehlisch | ****929 |
+| Clemens Lampen | ****938 |
+| Marcel Brauns | ****503 |
 
 ---
 
