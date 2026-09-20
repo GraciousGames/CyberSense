@@ -9,7 +9,6 @@
   padding: 3rem 0;
 }
 
-
 /* =====================================================================
    2. TRAININGSKOPF
    Überschrift, Fortschritt und Punktestand
@@ -28,7 +27,7 @@
   display: block;
   margin-bottom: 0.45rem;
 
-  color: #a78bfa;
+  color: var(--color-primary-overline);
 
   font-size: 0.8rem;
   font-weight: 750;
@@ -72,7 +71,6 @@
   font-size: 0.8rem;
 }
 
-
 /* =====================================================================
    3. FORTSCHRITTSBALKEN
    Fortschritt des Trainings
@@ -90,16 +88,15 @@
 
 .training-progress .progress-bar {
   background: linear-gradient(
-    90deg,
-    var(--color-primary),
-    #b07cff
+          90deg,
+          var(--color-primary),
+          #b07cff
   );
 
   border-radius: 999px;
 
   transition: width 300ms ease;
 }
-
 
 /* =====================================================================
    4. E-MAIL-FENSTER
@@ -145,9 +142,9 @@
   border-radius: var(--radius-small);
 
   transition:
-    color var(--transition-fast),
-    background-color var(--transition-fast),
-    border-color var(--transition-fast);
+          color var(--transition-fast),
+          background-color var(--transition-fast),
+          border-color var(--transition-fast);
 }
 
 .email-toolbar-button:hover,
@@ -155,7 +152,7 @@
   color: var(--color-text);
 
   background: var(--color-primary-light);
-  border-color: rgba(139, 92, 246, 0.22);
+  border-color: var(--color-primary-border-soft);
 }
 
 .email-content {
@@ -183,16 +180,15 @@
 .email-label {
   padding: 0.32rem 0.7rem;
 
-  color: #c5b0ff;
+  color: var(--color-primary-soft-strong);
 
   font-size: 0.75rem;
   font-weight: 650;
 
   background: var(--color-primary-light);
-  border: 1px solid rgba(139, 92, 246, 0.22);
+  border: 1px solid var(--color-primary-border-soft);
   border-radius: 999px;
 }
-
 
 /* =====================================================================
    5. ABSENDERBEREICH
@@ -216,15 +212,15 @@
   width: 48px;
   height: 48px;
 
-  color: #ffffff;
+  color: var(--color-white);
 
   font-size: 1.15rem;
   font-weight: 750;
 
   background: linear-gradient(
-    135deg,
-    var(--color-primary),
-    var(--color-primary-dark)
+          135deg,
+          var(--color-primary),
+          var(--color-primary-dark)
   );
 
   border-radius: 50%;
@@ -247,7 +243,7 @@
 }
 
 .email-sender-button:hover {
-  color: #c5b0ff;
+  color: var(--color-primary-soft-strong);
   text-decoration: underline;
 }
 
@@ -281,7 +277,6 @@
   animation: reveal 180ms ease-out;
 }
 
-
 /* =====================================================================
    6. E-MAIL-INHALT
    Nachrichtentext, Signatur und Aktionslink
@@ -312,14 +307,14 @@
 .fake-email-button {
   padding: 0.78rem 1.3rem;
 
-  color: #ffffff;
+  color: var(--color-white);
 
   font-weight: 650;
 
   background: linear-gradient(
-    135deg,
-    var(--color-primary),
-    var(--color-primary-dark)
+          135deg,
+          var(--color-primary),
+          var(--color-primary-dark)
   );
 
   border: 0;
@@ -328,8 +323,8 @@
   box-shadow: 0 8px 20px rgba(109, 40, 217, 0.26);
 
   transition:
-    transform var(--transition-fast),
-    box-shadow var(--transition-fast);
+          transform var(--transition-fast),
+          box-shadow var(--transition-fast);
 }
 
 .fake-email-button:hover,
@@ -355,10 +350,10 @@
   overflow: hidden;
 
   transition:
-    max-height 180ms ease,
-    padding 180ms ease,
-    opacity 180ms ease,
-    border-color 180ms ease;
+          max-height 180ms ease,
+          padding 180ms ease,
+          opacity 180ms ease,
+          border-color 180ms ease;
 }
 
 .link-target-visible {
@@ -379,7 +374,6 @@
   margin-top: 2rem;
 }
 
-
 /* =====================================================================
    7. VERDÄCHTIGE STELLEN
    Markierung nach einer beantworteten Aufgabe
@@ -397,7 +391,6 @@
   animation: highlight 420ms ease-out;
 }
 
-
 /* =====================================================================
    8. ANTWORTMÖGLICHKEITEN
    Legitim, verdächtig und Phishing
@@ -409,8 +402,7 @@
 
 .answer-buttons {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1rem;
 }
 
@@ -433,10 +425,10 @@
   box-shadow: var(--shadow-small);
 
   transition:
-    background-color var(--transition-fast),
-    border-color var(--transition-fast),
-    box-shadow var(--transition-fast),
-    transform var(--transition-fast);
+          background-color var(--transition-fast),
+          border-color var(--transition-fast),
+          box-shadow var(--transition-fast),
+          transform var(--transition-fast);
 }
 
 .answer-button:hover,
@@ -483,15 +475,6 @@
   background: var(--color-success-light);
 }
 
-.answer-suspicious:hover {
-  border-color: var(--color-warning);
-}
-
-.answer-suspicious .answer-icon {
-  color: #efc66e;
-  background: var(--color-warning-light);
-}
-
 .answer-phishing:hover {
   border-color: var(--color-danger);
 }
@@ -500,7 +483,6 @@
   color: #f291a2;
   background: var(--color-danger-light);
 }
-
 
 /* =====================================================================
    9. ANTWORT-FEEDBACK
@@ -546,7 +528,7 @@
 
   flex: 0 0 auto;
 
-  color: #ffffff;
+  color: var(--color-white);
 
   font-size: 1.35rem;
   font-weight: 750;
@@ -560,7 +542,6 @@
 .feedback-wrong .feedback-icon {
   background: var(--color-danger);
 }
-
 
 /* =====================================================================
    10. HINWEISE
@@ -596,14 +577,14 @@
 .clue-count {
   padding: 0.35rem 0.75rem;
 
-  color: #c5b0ff;
+  color: var(--color-primary-soft-strong);
 
   font-size: 0.8rem;
   font-weight: 650;
   white-space: nowrap;
 
   background: var(--color-primary-light);
-  border: 1px solid rgba(139, 92, 246, 0.22);
+  border: 1px solid var(--color-primary-border-soft);
   border-radius: 999px;
 }
 
@@ -628,8 +609,8 @@
   border: 0;
 
   transition:
-    color var(--transition-fast),
-    background-color var(--transition-fast);
+          color var(--transition-fast),
+          background-color var(--transition-fast);
 }
 
 .clue-button:hover {
@@ -642,7 +623,7 @@
   width: 31px;
   height: 31px;
 
-  color: #c5b0ff;
+  color: var(--color-primary-soft-strong);
 
   font-weight: 750;
 
@@ -667,7 +648,6 @@
   animation: reveal 180ms ease-out;
 }
 
-
 /* =====================================================================
    11. NÄCHSTE-AUFGABE-BUTTON
    Ausrichtung unter dem Feedback
@@ -677,7 +657,6 @@
   margin-top: 1.5rem;
   text-align: right;
 }
-
 
 /* =====================================================================
    12. ERGEBNISSEITE
@@ -704,15 +683,15 @@
   height: 72px;
   margin: 0 auto 1.4rem;
 
-  color: #ffffff;
+  color: var(--color-white);
 
   font-size: 2rem;
   font-weight: 750;
 
   background: linear-gradient(
-    135deg,
-    var(--color-success),
-    #20895f
+          135deg,
+          var(--color-success),
+          #20895f
   );
 
   border-radius: 50%;
@@ -724,12 +703,11 @@
 .result-score {
   margin: 1.2rem 0 0.5rem;
 
-  color: #c5b0ff;
+  color: var(--color-primary-soft-strong);
 
   font-size: 1.8rem;
   font-weight: 750;
 }
-
 
 /* =====================================================================
    13. LADEZUSTAND
@@ -752,7 +730,6 @@
   border-radius: var(--radius-medium);
   box-shadow: var(--shadow-small);
 }
-
 
 /* =====================================================================
    14. ANIMATIONEN
@@ -780,7 +757,6 @@
     background: var(--color-warning-light);
   }
 }
-
 
 /* =====================================================================
    15. RESPONSIVES DESIGN

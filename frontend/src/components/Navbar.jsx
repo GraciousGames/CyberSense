@@ -1,16 +1,45 @@
-import { NavLink } from "react-router-dom";
+// NavLink erzeugt Links,
+// die automatisch erkennen können,
+// ob die jeweilige Route gerade aktiv ist.
+import {
+    NavLink
+} from "react-router-dom";
 
-function Navbar({ user, onLogout }) {
-    function getLinkClass({ isActive }) {
+
+function Navbar({
+                    user,
+                    onLogout
+                }) {
+
+    // -------------------------------------------------------
+    // CSS-Klasse für aktive Navigation
+    // -------------------------------------------------------
+
+    function getLinkClass({
+                              isActive
+                          }) {
+
+        // Aktive Seite erhält zusätzlich die Klasse "active".
         return isActive
             ? "nav-link app-nav-link active"
             : "nav-link app-nav-link";
     }
 
+
     return (
         <nav className="navbar navbar-expand-lg navbar-dark app-navbar">
+
             <div className="container">
-                <NavLink className="navbar-brand app-brand" to="/">
+
+                {/* ------------------------------------------------ */}
+                {/* Logo und Markenname */}
+                {/* ------------------------------------------------ */}
+
+                <NavLink
+                    className="navbar-brand app-brand"
+                    to="/"
+                >
+
                     <img
                         src="/CyberSenseLogo.png"
                         alt="CyberSense Logo"
@@ -20,7 +49,13 @@ function Navbar({ user, onLogout }) {
                     <span className="brand-name">
             CyberSense
           </span>
+
                 </NavLink>
+
+
+                {/* ------------------------------------------------ */}
+                {/* Mobile Navigation */}
+                {/* ------------------------------------------------ */}
 
                 <button
                     className="navbar-toggler"
@@ -34,11 +69,19 @@ function Navbar({ user, onLogout }) {
                     <span className="navbar-toggler-icon" />
                 </button>
 
+
+                {/* ------------------------------------------------ */}
+                {/* Navigation */}
+                {/* ------------------------------------------------ */}
+
                 <div
                     className="collapse navbar-collapse"
                     id="mainNavigation"
                 >
+
                     <div className="navbar-nav ms-auto align-items-lg-center">
+
+                        {/* Startseite */}
                         <NavLink
                             className={getLinkClass}
                             to="/"
@@ -46,6 +89,8 @@ function Navbar({ user, onLogout }) {
                             Startseite
                         </NavLink>
 
+
+                        {/* Training ist für alle Benutzer verfügbar. */}
                         <NavLink
                             className={getLinkClass}
                             to="/training"
@@ -53,8 +98,14 @@ function Navbar({ user, onLogout }) {
                             Training
                         </NavLink>
 
+
+                        {/* ------------------------------------------------ */}
+                        {/* Navigation für Gäste */}
+                        {/* ------------------------------------------------ */}
+
                         {!user && (
                             <>
+
                                 <NavLink
                                     className={getLinkClass}
                                     to="/login"
@@ -62,19 +113,37 @@ function Navbar({ user, onLogout }) {
                                     Anmelden
                                 </NavLink>
 
+
                                 <NavLink
                                     className={getLinkClass}
                                     to="/register"
                                 >
                                     Registrieren
                                 </NavLink>
+
                             </>
                         )}
+
+
+                        {/* ------------------------------------------------ */}
+                        {/* Navigation für eingeloggte Benutzer */}
+                        {/* ------------------------------------------------ */}
 
                         {user && (
                             <>
 
+                                {/* Statistik ist nur sinnvoll,
+                    wenn Trainingsergebnisse einem User
+                    zugeordnet werden können. */}
+                                <NavLink
+                                    className={getLinkClass}
+                                    to="/statistics"
+                                >
+                                    Statistik
+                                </NavLink>
 
+
+                                {/* Administration wird nur für Admins angezeigt. */}
                                 {user.role === "admin" && (
                                     <NavLink
                                         className={getLinkClass}
@@ -84,6 +153,8 @@ function Navbar({ user, onLogout }) {
                                     </NavLink>
                                 )}
 
+
+                                {/* Logout beendet die aktuelle Session. */}
                                 <button
                                     className="app-nav-link app-nav-button"
                                     type="button"
@@ -91,17 +162,25 @@ function Navbar({ user, onLogout }) {
                                 >
                                     Abmelden
                                 </button>
+
+
+                                {/* Name des aktuell angemeldeten Users. */}
                                 <span className="app-nav-user">
                   {user.username}
                 </span>
+
                             </>
                         )}
+
                     </div>
+
                 </div>
+
             </div>
 
         </nav>
     );
 }
+
 
 export default Navbar;

@@ -1,173 +1,382 @@
 import { Link } from "react-router-dom";
 
+
 function HomePage() {
   return (
-    <main>
-      <section className="hero-section">
-        <div className="hero-background-shape hero-shape-one" />
-        <div className="hero-background-shape hero-shape-two" />
-        <div className="hero-content">
-          <div className="hero-copy">
+      <main>
+
+        {/* ================================================== */}
+        {/* HERO */}
+        {/* ================================================== */}
+
+        <section className="hero-section">
+
+          {/* Dekorative Hintergrundelemente */}
+          <div
+              className="hero-background-shape hero-shape-one"
+              aria-hidden="true"
+          />
+
+          <div
+              className="hero-background-shape hero-shape-two"
+              aria-hidden="true"
+          />
+
+
+          <div className="hero-content">
+
+            {/* Linke Seite: Einführung */}
+            <div className="hero-copy">
+
             <span className="hero-badge">
-              Interaktives Sicherheitstraining
+              Interaktives Phishing-Training
             </span>
 
-            <h1>
-              Phishing erkennen, bevor du darauf hereinfällst.
-            </h1>
+              <h1>
+                Würdest du diese
+                Nachricht als Phishing
+                erkennen?
+              </h1>
 
-            <p>
-              CyberSense zeigt dir realistische Nachrichten und
-              erklärt verständlich, woran sich Phishing und Social
-              Engineering erkennen lassen.
-            </p>
+              <p>
+                Trainiere mit realistischen E-Mails,
+                triff deine Entscheidung und erfahre direkt,
+                welche Merkmale eine Nachricht verraten.
+              </p>
 
-            <div className="hero-actions">
-              <Link
-                className="btn btn-primary btn-lg"
-                to="/training"
+
+              {/* Zentrale Aktionen */}
+              <div className="hero-actions">
+
+                <Link
+                    className="btn btn-primary btn-lg"
+                    to="/training"
+                >
+                  Training starten
+                </Link>
+
+                <Link
+                    className="btn btn-outline-secondary btn-lg"
+                    to="/register"
+                >
+                  Kostenlos registrieren
+                </Link>
+
+              </div>
+
+
+              {/* Kurzer Überblick über die Vorteile */}
+              <div className="hero-benefits">
+                <span>✓ Realistische E-Mails</span>
+                <span>✓ Sofortiges Feedback</span>
+                <span>✓ Persönlicher Fortschritt</span>
+              </div>
+
+            </div>
+
+
+            {/* Rechte Seite: Beispiel einer Trainingsmail */}
+            <div className="hero-demo-card">
+
+              <div
+                  className="demo-window-toolbar"
+                  aria-hidden="true"
               >
-                Training starten
-              </Link>
+                <span />
+                <span />
+                <span />
+              </div>
 
-              <Link
-                className="btn btn-outline-secondary btn-lg"
-                to="/register"
-              >
-                Konto erstellen
-              </Link>
-            </div>
 
-            <div className="hero-benefits">
-              <span>✓ Realistische Szenarien</span>
-              <span>✓ Direkte Erklärungen</span>
-              <span>✓ Kostenloses Training</span>
-            </div>
-          </div>
+              <div className="demo-mail">
 
-          <div className="hero-demo-card">
-            <div className="demo-window-toolbar">
-              <span />
-              <span />
-              <span />
-            </div>
-
-            <div className="demo-mail">
               <span className="demo-mail-label">
-                Beispielnachricht
+                Trainingsbeispiel
               </span>
 
-              <h2>Ihr Konto wird gesperrt</h2>
+                <h2>
+                  Ungewöhnliche Anmeldung erkannt
+                </h2>
 
-              <p className="demo-sender">
-                Von: support@paypaI-security.example
-              </p>
+                <p className="demo-sender">
+                  Von: security@microsoft-kontoschutz.test
+                </p>
 
-              <p>
-                Bestätigen Sie innerhalb von 24 Stunden Ihre
-                Identität.
-              </p>
+                <p>
+                  Wir haben eine ungewöhnliche Anmeldung
+                  festgestellt. Bitte bestätigen Sie innerhalb
+                  von 30 Minuten Ihre Identität.
+                </p>
 
-              <div className="demo-warning">
-                Verdächtige Domain erkannt
+
+                {/* Beispiel für einen erkannten Hinweis */}
+                <div className="demo-warning">
+                  ⚠ Auffällige Absenderadresse
+                </div>
+
+                <div className="demo-warning">
+                  ⚠ Künstlicher Zeitdruck
+                </div>
+
               </div>
+
             </div>
-          </div>
-        </div>
-      </section>
 
-      <section className="feature-section">
-        <div className="page-container">
-          <div className="section-heading text-center">
+          </div>
+
+        </section>
+
+
+        {/* ================================================== */}
+        {/* ABLAUF DES TRAININGS */}
+        {/* ================================================== */}
+
+        <section className="feature-section">
+
+          <div className="page-container">
+
+            <div className="section-heading text-center">
+
             <span className="page-overline">
-              So funktioniert es
+              So funktioniert CyberSense
             </span>
 
-            <h2>Schritt für Schritt sicherer werden</h2>
+              <h2>
+                Erkennen. Entscheiden. Verstehen.
+              </h2>
 
-            <p>
-              Das Training verbindet realistische Beispiele mit
-              verständlichem Feedback.
-            </p>
+              <p>
+                Jede Aufgabe konfrontiert dich mit einer
+                realistischen Nachricht. Du entscheidest selbst
+                und bekommst anschließend direkt erklärt,
+                worauf du achten solltest.
+              </p>
+
+            </div>
+
+
+            <div className="feature-grid">
+
+              {/* Schritt 1 */}
+              <article className="feature-card">
+
+              <span className="feature-number">
+                01
+              </span>
+
+                <h3>
+                  E-Mail untersuchen
+                </h3>
+
+                <p>
+                  Prüfe Absender, Betreff, Inhalt und Links
+                  genau so, wie du es auch in deinem eigenen
+                  Postfach tun würdest.
+                </p>
+
+              </article>
+
+
+              {/* Schritt 2 */}
+              <article className="feature-card">
+
+              <span className="feature-number">
+                02
+              </span>
+
+                <h3>
+                  Entscheidung treffen
+                </h3>
+
+                <p>
+                  Entscheide dich eindeutig:
+                  Ist die Nachricht legitim oder handelt
+                  es sich um Phishing?
+                </p>
+
+              </article>
+
+
+              {/* Schritt 3 */}
+              <article className="feature-card">
+
+              <span className="feature-number">
+                03
+              </span>
+
+                <h3>
+                  Warnzeichen erkennen
+                </h3>
+
+                <p>
+                  Nach deiner Antwort werden relevante Stellen
+                  hervorgehoben und verständlich erklärt.
+                </p>
+
+              </article>
+
+            </div>
+
           </div>
 
-          <div className="feature-grid">
-            <article className="feature-card">
-              <span className="feature-number">01</span>
+        </section>
 
-              <h3>Nachricht prüfen</h3>
 
-              <p>
-                Untersuche Absender, Inhalt, Links und sprachliche
-                Auffälligkeiten.
-              </p>
-            </article>
+        {/* ================================================== */}
+        {/* LERNINHALTE */}
+        {/* ================================================== */}
 
-            <article className="feature-card">
-              <span className="feature-number">02</span>
+        <section className="security-section">
 
-              <h3>Entscheidung treffen</h3>
+          <div className="page-container security-content">
 
-              <p>
-                Bewerte, ob eine Nachricht legitim, verdächtig oder
-                eindeutig Phishing ist.
-              </p>
-            </article>
+            {/* Linke Seite */}
+            <div>
 
-            <article className="feature-card">
-              <span className="feature-number">03</span>
-
-              <h3>Hinweise verstehen</h3>
-
-              <p>
-                Erhalte sofortiges Feedback und entdecke alle
-                relevanten Warnzeichen.
-              </p>
-            </article>
-          </div>
-        </div>
-      </section>
-
-      <section className="security-section">
-        <div className="page-container security-content">
-          <div>
             <span className="page-overline">
-              Medienkompetenz und Sicherheit
+              Lernen statt raten
             </span>
 
-            <h2>Mehr als nur ein Quiz</h2>
+              <h2>
+                Verstehe, warum eine Nachricht gefährlich ist.
+              </h2>
 
-            <p>
-              CyberSense soll nicht nur richtige Antworten zählen,
-              sondern erklären, warum bestimmte Merkmale gefährlich
-              sind.
-            </p>
+              <p>
+                Phishing wird immer überzeugender.
+                Deshalb reicht es nicht, nur nach
+                Rechtschreibfehlern zu suchen.
+                CyberSense zeigt dir unterschiedliche
+                Warnsignale und erklärt ihren Zusammenhang.
+              </p>
 
-            <ul className="security-list">
-              <li>Manipulierte Absenderadressen erkennen</li>
-              <li>Künstlichen Zeitdruck hinterfragen</li>
-              <li>Gefälschte Links überprüfen</li>
-              <li>Social-Engineering-Muster verstehen</li>
-            </ul>
+
+              <ul className="security-list">
+
+                <li>
+                  Gefälschte und manipulierte
+                  Absenderadressen erkennen
+                </li>
+
+                <li>
+                  Verdächtige Links und Domains
+                  richtig einschätzen
+                </li>
+
+                <li>
+                  Zeitdruck und emotionale
+                  Manipulation hinterfragen
+                </li>
+
+                <li>
+                  Gefälschte Rechnungen,
+                  Kontowarnungen und Paketmeldungen erkennen
+                </li>
+
+                <li>
+                  Moderne Phishing-Techniken
+                  besser verstehen
+                </li>
+
+              </ul>
+
+            </div>
+
+
+            {/* Rechte Seite: Kerngedanke des Trainings */}
+            <div className="security-stat-card">
+
+            <span className="security-stat-value">
+              2
+            </span>
+
+              <span className="security-stat-label">
+              klare Entscheidungen
+            </span>
+
+              <div className="security-choice-preview">
+
+              <span className="security-choice-legitimate">
+                ✓ Legitim
+              </span>
+
+                <span className="security-choice-phishing">
+                ! Phishing
+              </span>
+
+              </div>
+
+
+              <hr />
+
+
+              <span className="security-stat-value">
+              100 %
+            </span>
+
+              <span className="security-stat-label">
+              direktes Feedback nach jeder Entscheidung
+            </span>
+
+            </div>
+
           </div>
 
-          <div className="security-stat-card">
-            <span className="security-stat-value">3</span>
-            <span className="security-stat-label">
-              interaktive Trainingskategorien
+        </section>
+
+
+        {/* ================================================== */}
+        {/* ABSCHLUSS / CALL TO ACTION */}
+        {/* ================================================== */}
+
+        <section className="feature-section">
+
+          <div className="page-container">
+
+            <div className="section-heading text-center">
+
+            <span className="page-overline">
+              Bereit für die erste Nachricht?
             </span>
 
-            <hr />
+              <h2>
+                Teste, wie sicher du Phishing erkennst.
+              </h2>
 
-            <span className="security-stat-value">100 %</span>
-            <span className="security-stat-label">
-              direktes Feedback
-            </span>
+              <p>
+                Du kannst das Training direkt ausprobieren.
+                Mit einem kostenlosen Konto werden deine
+                Ergebnisse zusätzlich gespeichert und in
+                deiner persönlichen Statistik ausgewertet.
+              </p>
+
+
+              <div className="hero-actions">
+
+                <Link
+                    className="btn btn-primary btn-lg"
+                    to="/training"
+                >
+                  Training starten
+                </Link>
+
+                <Link
+                    className="btn btn-outline-secondary btn-lg"
+                    to="/register"
+                >
+                  Konto erstellen
+                </Link>
+
+              </div>
+
+            </div>
+
           </div>
-        </div>
-      </section>
-    </main>
+
+        </section>
+
+      </main>
   );
 }
+
 
 export default HomePage;
