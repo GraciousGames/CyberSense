@@ -1,0 +1,50 @@
+# ============================================================
+# CyberSense
+# ============================================================
+
+# Node.js dependencies
+node_modules/
+
+# Frontend build
+frontend/dist/
+dist/
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Beispiel-Konfiguration darf ins Repository
+!.env.example
+
+# SQLite databases
+*.sqlite
+*.sqlite3
+*.db
+*.db-journal
+*.sqlite-journal
+*.sqlite-shm
+*.sqlite-wal
+
+# Session- und Testdateien
+cookies.txt
+backend/cookies.txt
+
+# Test coverage
+coverage/
+
+# IDEs
+.idea/
+.vscode/
+*.iml
+
+# Betriebssystem
+.DS_Store
+Thumbs.db
+
+# Temporäre Dateien
+*.tmp
+*.temp
+*.swp
