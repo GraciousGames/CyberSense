@@ -1951,3 +1951,9 @@ CyberSense was developed exclusively for educational purposes as part of the **W
 All email messages used in CyberSense are prepared training scenarios.
 
 The application does not access, read, or analyze a user's real email account.
+
+## Full Documentation
+
+The complete project documentation is available here:
+
+[CyberSense Project Documentation](https://github.com/GraciousGames/CyberSense/blob/main/CyberSense_Documentation_for_GitHub.pdf)
