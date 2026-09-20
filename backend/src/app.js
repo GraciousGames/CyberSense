@@ -1,71 +1,163 @@
+// Express stellt unseren HTTP-Server bereit.
 import express from "express";
+
+// CORS erlaubt die Kommunikation zwischen
+// Frontend auf Port 5173 und Backend auf Port 3000.
 import cors from "cors";
-import { pathToFileURL } from "node:url";
 
-import {
-  initDatabase
-} from "./database/initDatabase.js";
+// Session-Verwaltung für Login und Benutzerzustand.
+import session from "express-session";
 
-import {
-  seedDatabase
-} from "./database/seedDatabase.js";
 
+// Authentifizierungs-Routen.
+import authRoutes from "./routes/authRoutes.js";
+
+// Scenario-Routen.
 import scenarioRoutes from "./routes/scenarioRoutes.js";
 
-const app = express();
-const port = 3000;
+// Trainingsversuche.
+import attemptRoutes from "./routes/attemptRoutes.js";
 
+
+// Erstellt benötigte Datenbanktabellen.
+import {
+    initDatabase
+} from "./database/initDatabase.js";
+
+
+// Fügt initiale Trainingsdaten ein.
+import {
+    seedDatabase
+} from "./database/seedDatabase.js";
+
+
+const app = express();
+
+
+// ---------------------------------------------------------
+// Datenbank vorbereiten
+// ---------------------------------------------------------
+
+// Tabellen erzeugen, falls sie noch nicht existieren.
 initDatabase();
 
-if (process.env.CYBERSENSE_SEED_DATABASE !== "false") {
-  seedDatabase();
-}
+// Initiale Szenarien hinzufügen.
+seedDatabase();
+
+
+// ---------------------------------------------------------
+// CORS
+// ---------------------------------------------------------
 
 app.use(
-  cors({
-    origin: "http://localhost:5173"
-  })
+    cors({
+        // Unser React/Vite-Frontend.
+        origin: "http://localhost:5173",
+
+        // Erlaubt Cookies bei Cross-Origin-Requests.
+        credentials: true
+    })
 );
 
-app.use(express.json());
 
-app.get("/api/health", (request, response) => {
-  response.status(200).json({
-    status: "ok",
-    message: "CyberSense-Backend läuft."
-  });
-});
+// ---------------------------------------------------------
+// JSON Body Parser
+// ---------------------------------------------------------
 
-app.use("/api/scenarios", scenarioRoutes);
+// Wandelt JSON-Request-Bodies automatisch
+// in request.body um.
+app.use(
+    express.json()
+);
 
-app.use((request, response) => {
-  response.status(404).json({
-    message: "Endpunkt wurde nicht gefunden."
-  });
-});
 
-app.use((error, request, response, next) => {
-  console.error(error);
+// ---------------------------------------------------------
+// Session-Konfiguration
+// ---------------------------------------------------------
 
-  if (response.headersSent) {
-    return next(error);
-  }
+app.use(
+    session({
+        // In Produktion muss SESSION_SECRET gesetzt werden.
+        secret:
+            process.env.SESSION_SECRET ||
+            "development-secret",
 
-  return response.status(500).json({
-    message: "An unexpected server error occurred."
-  });
-});
+        // Session wird nicht unnötig gespeichert,
+        // wenn sich nichts geändert hat.
+        resave: false,
 
-const entryFileUrl = process.argv[1]
-  ? pathToFileURL(process.argv[1]).href
-  : "";
+        // Für nicht eingeloggte Besucher wird nicht sofort
+        // eine leere Session gespeichert.
+        saveUninitialized: false,
 
-if (import.meta.url === entryFileUrl) {
-  app.listen(port, () => {
-    console.log(
-      `Backend läuft auf http://localhost:${port}/api/scenarios.`
-    );
-  });
-}
+        cookie: {
+            // JavaScript im Browser kann den Cookie nicht auslesen.
+            httpOnly: true,
+
+            // Schutz gegen bestimmte Cross-Site-Anfragen.
+            sameSite: "lax",
+
+            // Für localhost bleibt secure false.
+            // Bei HTTPS in Produktion muss dies true sein.
+            secure: false
+        }
+    })
+);
+
+
+// ---------------------------------------------------------
+// Health Check
+// ---------------------------------------------------------
+
+app.get(
+    "/api/health",
+    (request, response) => {
+
+        response.status(200).json({
+            status: "ok",
+            message: "CyberSense-Backend läuft."
+        });
+    }
+);
+
+
+// ---------------------------------------------------------
+// API-Routen
+// ---------------------------------------------------------
+
+// Trainingsszenarien.
+app.use(
+    "/api/scenarios",
+    scenarioRoutes
+);
+
+
+// Registrierung, Login, Logout und /me.
+app.use(
+    "/api/auth",
+    authRoutes
+);
+
+
+// Antworten und Trainingshistorie.
+app.use(
+    "/api/attempts",
+    attemptRoutes
+);
+
+
+// ---------------------------------------------------------
+// Fallback für unbekannte Endpunkte
+// ---------------------------------------------------------
+
+app.use(
+    (request, response) => {
+
+        response.status(404).json({
+            message: "Endpunkt wurde nicht gefunden."
+        });
+    }
+);
+
 
 export default app;

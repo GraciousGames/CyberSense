@@ -1,222 +1,259 @@
-import { useEffect, useState } from "react";
+// React-Hooks für lokale Zustände und Lifecycle-Verhalten.
+import {
+    useEffect,
+    useState
+} from "react";
+
+// Link wird für Navigation ohne vollständiges Neuladen verwendet.
 import { Link } from "react-router-dom";
 
+// Service-Funktionen für Laden und Löschen der Szenarien.
 import {
-  deleteScenario,
-  getScenarios
+    deleteScenario,
+    getScenarios
 } from "../services/scenarioService.js";
 
-const answerLabels = {
-  legitim: "Legitim",
-  suspicious: "Verdächtig",
-  phishing: "Phishing"
-};
 
 function AdminScenarioListPage() {
-  const [scenarios, setScenarios] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [loadError, setLoadError] = useState("");
-  const [actionError, setActionError] = useState("");
-  const [isDeletingId, setIsDeletingId] = useState(null);
-  const [reloadKey, setReloadKey] = useState(0);
+    // Enthält alle geladenen Szenarien.
+    const [scenarios, setScenarios] = useState([]);
 
-  useEffect(() => {
-    async function loadScenarios() {
-      try {
-        setIsLoading(true);
-        setLoadError("");
+    // Zeigt an, ob gerade Daten vom Backend geladen werden.
+    const [isLoading, setIsLoading] = useState(true);
 
-        const loadedScenarios = await getScenarios();
+    // Enthält eine mögliche Fehlermeldung.
+    const [error, setError] = useState("");
 
-        if (!Array.isArray(loadedScenarios)) {
-          throw new Error(
-            "Das Backend hat keine gültige Szenarienliste zurückgegeben."
-          );
+    // Enthält eine mögliche Erfolgsmeldung.
+    const [success, setSuccess] = useState("");
+
+
+    // -------------------------------------------------------
+    // Szenarien laden
+    // -------------------------------------------------------
+
+    useEffect(() => {
+        async function loadScenarios() {
+            try {
+                // Vor dem Laden alte Fehlermeldungen entfernen.
+                setError("");
+
+                // Scenario-Liste aus dem Backend abrufen.
+                const loadedScenarios = await getScenarios();
+
+                // Geladene Daten in den React-State übernehmen.
+                setScenarios(loadedScenarios);
+            } catch (loadError) {
+                // Verständliche Meldung anzeigen,
+                // falls das Backend nicht erreichbar ist.
+                setError(
+                    loadError instanceof Error
+                        ? loadError.message
+                        : "Die Szenarien konnten nicht geladen werden."
+                );
+            } finally {
+                // Der Ladezustand endet unabhängig von Erfolg oder Fehler.
+                setIsLoading(false);
+            }
         }
 
-        setScenarios(loadedScenarios);
-      } catch (error) {
-        setLoadError(
-          error instanceof Error
-            ? error.message
-            : "Die Szenarien konnten nicht geladen werden."
+        loadScenarios();
+    }, []);
+
+
+    // -------------------------------------------------------
+    // Szenario löschen
+    // -------------------------------------------------------
+
+    async function handleDelete(scenario) {
+        // Benutzer muss das Löschen zuerst bestätigen.
+        const confirmed = window.confirm(
+            `Soll das Szenario „${scenario.subject}“ wirklich gelöscht werden?`
         );
-      } finally {
-        setIsLoading(false);
-      }
+
+        // Bei Abbrechen passiert nichts.
+        if (!confirmed) {
+            return;
+        }
+
+        try {
+            setError("");
+            setSuccess("");
+
+            // DELETE-Request an das Backend senden.
+            await deleteScenario(scenario.id);
+
+            // Das gelöschte Szenario direkt aus der Oberfläche entfernen.
+            setScenarios((currentScenarios) =>
+                currentScenarios.filter(
+                    (currentScenario) =>
+                        currentScenario.id !== scenario.id
+                )
+            );
+
+            // Erfolgsmeldung anzeigen.
+            setSuccess(
+                `Das Szenario „${scenario.subject}“ wurde gelöscht.`
+            );
+        } catch (deleteError) {
+            setError(
+                deleteError instanceof Error
+                    ? deleteError.message
+                    : "Das Szenario konnte nicht gelöscht werden."
+            );
+        }
     }
 
-    loadScenarios();
-  }, [reloadKey]);
 
-  async function handleDelete(scenario) {
-    const shouldDelete = window.confirm(
-      `Soll das Szenario „${scenario.subject}“ wirklich gelöscht werden? Diese Aktion kann nicht rückgängig gemacht werden.`
+    // -------------------------------------------------------
+    // Oberfläche
+    // -------------------------------------------------------
+
+    return (
+        <main className="page-container">
+
+            {/* Überschrift der Verwaltungsseite */}
+            <header className="page-heading">
+        <span className="page-overline">
+          Administration
+        </span>
+
+                <h1 className="page-title">
+                    Szenarien verwalten
+                </h1>
+
+                <p className="page-description">
+                    Zeige vorhandene Trainingsszenarien an,
+                    bearbeite sie oder lösche sie.
+                </p>
+            </header>
+
+
+            {/* Navigation oberhalb der Liste */}
+            <div className="admin-form-actions">
+                <Link
+                    className="btn btn-ghost"
+                    to="/admin"
+                >
+                    Zurück zum Dashboard
+                </Link>
+
+                <Link
+                    className="btn btn-primary"
+                    to="/admin/scenarios/new"
+                >
+                    Neues Szenario
+                </Link>
+            </div>
+
+
+            {/* Fehlermeldung */}
+            {error && (
+                <div
+                    className="alert alert-danger"
+                    role="alert"
+                >
+                    {error}
+                </div>
+            )}
+
+
+            {/* Erfolgsmeldung */}
+            {success && (
+                <div
+                    className="alert alert-success"
+                    role="alert"
+                >
+                    {success}
+                </div>
+            )}
+
+
+            {/* Während des Ladens wird eine kurze Meldung angezeigt. */}
+            {isLoading && (
+                <p>
+                    Szenarien werden geladen …
+                </p>
+            )}
+
+
+            {/* Falls keine Szenarien vorhanden sind. */}
+            {!isLoading &&
+                scenarios.length === 0 &&
+                !error && (
+                    <section className="surface-card admin-form-card">
+                        <p>
+                            Es sind noch keine Szenarien vorhanden.
+                        </p>
+                    </section>
+                )}
+
+
+            {/* Liste aller vorhandenen Szenarien */}
+            {!isLoading &&
+                scenarios.length > 0 && (
+                    <section className="admin-dashboard-grid">
+
+                        {scenarios.map((scenario) => (
+                            <article
+                                className="admin-dashboard-card"
+                                key={scenario.id}
+                            >
+
+                                {/* ID dient hier nur als zusätzliche Information. */}
+                                <span className="page-overline">
+                  Szenario #{scenario.id}
+                </span>
+
+                                <h2>
+                                    {scenario.subject}
+                                </h2>
+
+                                <p>
+                                    <strong>Absender:</strong>{" "}
+                                    {scenario.senderName}
+                                    <br />
+
+                                    <strong>Adresse:</strong>{" "}
+                                    {scenario.senderEmail}
+                                    <br />
+
+                                    <strong>Bewertung:</strong>{" "}
+                                    {scenario.correctAnswer}
+                                </p>
+
+
+                                {/* Aktionen für dieses einzelne Szenario */}
+                                <div className="admin-form-actions">
+
+                                    {/* Öffnet das Szenario im Bearbeitungsmodus. */}
+                                    <Link
+                                        className="btn btn-secondary"
+                                        to={`/admin/scenarios/${scenario.id}/edit`}
+                                    >
+                                        Bearbeiten
+                                    </Link>
+
+                                    {/* Löschen wird erst nach Bestätigung ausgeführt. */}
+                                    <button
+                                        className="btn btn-danger"
+                                        type="button"
+                                        onClick={() =>
+                                            handleDelete(scenario)
+                                        }
+                                    >
+                                        Löschen
+                                    </button>
+
+                                </div>
+                            </article>
+                        ))}
+
+                    </section>
+                )}
+
+        </main>
     );
-
-    if (!shouldDelete) {
-      return;
-    }
-
-    try {
-      setActionError("");
-      setIsDeletingId(scenario.id);
-      await deleteScenario(scenario.id);
-      setScenarios((currentScenarios) =>
-        currentScenarios.filter((item) => item.id !== scenario.id)
-      );
-    } catch (error) {
-      setActionError(
-        error instanceof Error
-          ? error.message
-          : "Das Szenario konnte nicht gelöscht werden."
-      );
-    } finally {
-      setIsDeletingId(null);
-    }
-  }
-
-  return (
-    <main className="page-container">
-      <header className="page-heading admin-list-heading">
-        <div>
-          <span className="page-overline">Administration</span>
-
-          <h1 className="page-title">Szenarien verwalten</h1>
-
-          <p className="page-description">
-            Erstelle, prüfe, bearbeite und lösche die vorhandenen
-            Trainingsszenarien.
-          </p>
-        </div>
-
-        <Link className="btn btn-primary" to="/admin/scenarios/new">
-          Neues Szenario
-        </Link>
-      </header>
-
-      {isLoading && (
-        <section className="surface-card admin-list-status" role="status">
-          <div
-            className="spinner-border text-primary"
-            aria-hidden="true"
-          />
-          <p>Szenarien werden geladen …</p>
-        </section>
-      )}
-
-      {!isLoading && loadError && (
-        <section className="alert alert-danger" role="alert">
-          <h2 className="h5">Szenarien konnten nicht geladen werden</h2>
-          <p>{loadError}</p>
-          <button
-            className="btn btn-outline-secondary"
-            type="button"
-            onClick={() => setReloadKey((key) => key + 1)}
-          >
-            Erneut versuchen
-          </button>
-        </section>
-      )}
-
-      {actionError && (
-        <div className="alert alert-danger" role="alert">
-          {actionError}
-        </div>
-      )}
-
-      {!isLoading && !loadError && scenarios.length === 0 && (
-        <section className="surface-card admin-list-empty">
-          <h2>Noch keine Szenarien vorhanden</h2>
-          <p>Erstelle das erste Szenario für das Phishing-Training.</p>
-          <Link className="btn btn-primary" to="/admin/scenarios/new">
-            Erstes Szenario erstellen
-          </Link>
-        </section>
-      )}
-
-      {!isLoading && !loadError && scenarios.length > 0 && (
-        <section aria-label="Vorhandene Trainingsszenarien">
-          <div className="admin-list-summary">
-            <strong>{scenarios.length}</strong>
-            {scenarios.length === 1 ? " Szenario" : " Szenarien"}
-          </div>
-
-          <div className="admin-scenario-list">
-            {scenarios.map((scenario) => (
-              <article
-                className="surface-card admin-scenario-item"
-                key={scenario.id}
-              >
-                <div className="admin-scenario-main">
-                  <div className="admin-scenario-id" aria-label="Szenario-ID">
-                    #{scenario.id}
-                  </div>
-
-                  <div className="admin-scenario-copy">
-                    <div className="admin-scenario-meta">
-                      <span
-                        className={`admin-answer-badge admin-answer-${scenario.correctAnswer}`}
-                      >
-                        {answerLabels[scenario.correctAnswer] ??
-                          scenario.correctAnswer}
-                      </span>
-                      <span>
-                        {scenario.clues.length} {scenario.clues.length === 1
-                          ? "Hinweis"
-                          : "Hinweise"}
-                      </span>
-                    </div>
-
-                    <h2>{scenario.subject}</h2>
-                    <p>
-                      {scenario.senderName} &lt;{scenario.senderEmail}&gt;
-                    </p>
-                  </div>
-                </div>
-
-                <div className="admin-scenario-actions">
-                  <details className="admin-scenario-details">
-                    <summary className="btn btn-outline-secondary">
-                      Details
-                    </summary>
-
-                    <div className="admin-scenario-details-content">
-                      <p><strong>An:</strong> {scenario.recipient}</p>
-                      <p><strong>Datum:</strong> {scenario.date}</p>
-                      <p><strong>Erklärung:</strong> {scenario.explanation}</p>
-                    </div>
-                  </details>
-
-                  <Link
-                    className="btn btn-secondary"
-                    to={`/admin/scenarios/${scenario.id}/edit`}
-                  >
-                    Bearbeiten
-                  </Link>
-
-                  <button
-                    className="btn btn-danger"
-                    type="button"
-                    disabled={isDeletingId !== null}
-                    onClick={() => handleDelete(scenario)}
-                  >
-                    {isDeletingId === scenario.id
-                      ? "Wird gelöscht …"
-                      : "Löschen"}
-                  </button>
-                </div>
-              </article>
-            ))}
-          </div>
-
-          <Link className="btn btn-ghost admin-list-back" to="/admin">
-            Zurück zum Dashboard
-          </Link>
-        </section>
-      )}
-    </main>
-  );
 }
 
 export default AdminScenarioListPage;

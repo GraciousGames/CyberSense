@@ -12,12 +12,12 @@ function mapScenario(row) {
   `);
 
   const clues = selectCluesByScenarioId
-    .all(row.id)
-    .map((clue) => ({
-      id: clue.clue_key,
-      title: clue.title,
-      description: clue.description
-    }));
+      .all(row.id)
+      .map((clue) => ({
+        id: clue.clue_key,
+        title: clue.title,
+        description: clue.description
+      }));
 
   return {
     id: row.id,
@@ -60,8 +60,8 @@ export function findAllScenarios() {
   `);
 
   return selectAllScenarios
-    .all()
-    .map(mapScenario);
+      .all()
+      .map(mapScenario);
 }
 
 export function findScenarioById(id) {
@@ -94,7 +94,22 @@ export function findScenarioById(id) {
   return mapScenario(row);
 }
 
-export function createScenario(scenario) {
+export function createScenario({
+                                 senderName,
+                                 senderEmail,
+                                 recipient,
+                                 subject,
+                                 date,
+                                 greeting,
+                                 paragraphs,
+                                 actionText,
+                                 displayedUrl,
+                                 actualUrl,
+                                 signature,
+                                 correctAnswer,
+                                 explanation,
+                                 clues = []
+                               }) {
   const insertScenario = database.prepare(`
     INSERT INTO scenarios (
       sender_name,
@@ -124,35 +139,33 @@ export function createScenario(scenario) {
     VALUES (?, ?, ?, ?)
   `);
 
-  database.exec("BEGIN TRANSACTION");
-
   try {
+    database.exec("BEGIN");
+
     const result = insertScenario.run(
-      scenario.senderName.trim(),
-      scenario.senderEmail.trim(),
-      scenario.recipient.trim(),
-      scenario.subject.trim(),
-      scenario.date.trim(),
-      scenario.greeting.trim(),
-      JSON.stringify(
-        scenario.paragraphs.map((paragraph) => paragraph.trim())
-      ),
-      scenario.actionText?.trim() || null,
-      scenario.displayedUrl?.trim() || null,
-      scenario.actualUrl?.trim() || null,
-      scenario.signature.trim(),
-      scenario.correctAnswer,
-      scenario.explanation.trim()
+        senderName,
+        senderEmail,
+        recipient,
+        subject,
+        date,
+        greeting,
+        JSON.stringify(paragraphs),
+        actionText ?? null,
+        displayedUrl ?? null,
+        actualUrl ?? null,
+        signature,
+        correctAnswer,
+        explanation
     );
 
     const scenarioId = Number(result.lastInsertRowid);
 
-    for (const clue of scenario.clues) {
+    for (const clue of clues) {
       insertClue.run(
-        scenarioId,
-        clue.id.trim(),
-        clue.title.trim(),
-        clue.description.trim()
+          scenarioId,
+          clue.id,
+          clue.title,
+          clue.description
       );
     }
 
@@ -165,11 +178,22 @@ export function createScenario(scenario) {
   }
 }
 
-export function updateScenario(id, scenario) {
-  if (!findScenarioById(id)) {
-    return null;
-  }
-
+export function updateScenario(id, {
+  senderName,
+  senderEmail,
+  recipient,
+  subject,
+  date,
+  greeting,
+  paragraphs,
+  actionText,
+  displayedUrl,
+  actualUrl,
+  signature,
+  correctAnswer,
+  explanation,
+  clues = []
+}) {
   const updateScenarioStatement = database.prepare(`
     UPDATE scenarios
     SET
@@ -204,36 +228,39 @@ export function updateScenario(id, scenario) {
     VALUES (?, ?, ?, ?)
   `);
 
-  database.exec("BEGIN TRANSACTION");
-
   try {
-    updateScenarioStatement.run(
-      scenario.senderName.trim(),
-      scenario.senderEmail.trim(),
-      scenario.recipient.trim(),
-      scenario.subject.trim(),
-      scenario.date.trim(),
-      scenario.greeting.trim(),
-      JSON.stringify(
-        scenario.paragraphs.map((paragraph) => paragraph.trim())
-      ),
-      scenario.actionText?.trim() || null,
-      scenario.displayedUrl?.trim() || null,
-      scenario.actualUrl?.trim() || null,
-      scenario.signature.trim(),
-      scenario.correctAnswer,
-      scenario.explanation.trim(),
-      id
+    database.exec("BEGIN");
+
+    const result = updateScenarioStatement.run(
+        senderName,
+        senderEmail,
+        recipient,
+        subject,
+        date,
+        greeting,
+        JSON.stringify(paragraphs),
+        actionText ?? null,
+        displayedUrl ?? null,
+        actualUrl ?? null,
+        signature,
+        correctAnswer,
+        explanation,
+        id
     );
+
+    if (result.changes === 0) {
+      database.exec("ROLLBACK");
+      return null;
+    }
 
     deleteClues.run(id);
 
-    for (const clue of scenario.clues) {
+    for (const clue of clues) {
       insertClue.run(
-        id,
-        clue.id.trim(),
-        clue.title.trim(),
-        clue.description.trim()
+          id,
+          clue.id,
+          clue.title,
+          clue.description
       );
     }
 
@@ -247,12 +274,12 @@ export function updateScenario(id, scenario) {
 }
 
 export function deleteScenario(id) {
-  const deleteStatement = database.prepare(`
+  const deleteScenarioStatement = database.prepare(`
     DELETE FROM scenarios
     WHERE id = ?
   `);
 
-  const result = deleteStatement.run(id);
+  const result = deleteScenarioStatement.run(id);
 
   return result.changes > 0;
 }

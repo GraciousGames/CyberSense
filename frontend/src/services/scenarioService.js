@@ -1,56 +1,125 @@
-const API_BASE_URL = "http://localhost:3000/api";
+import API_BASE_URL from "../config/api.js";
 
-async function request(path, options = {}) {
-  const response = await fetch(`${API_BASE_URL}${path}`, options);
 
-  if (response.status === 204) {
-    return null;
-  }
+// ---------------------------------------------------------
+// Szenario-API
+// ---------------------------------------------------------
 
-  const data = await response.json().catch(() => null);
+const SCENARIO_API_URL = `${API_BASE_URL}/scenarios`;
 
-  if (!response.ok) {
-    const message =
-      data?.errors?.join(" ") ??
-      data?.message ??
-      `Die Anfrage ist fehlgeschlagen: ${response.status}`;
 
-    throw new Error(message);
-  }
+// ---------------------------------------------------------
+// Alle Szenarien laden
+// ---------------------------------------------------------
 
-  return data;
+export async function getScenarios() {
+    const response = await fetch(SCENARIO_API_URL, {
+        credentials: "include"
+    });
+
+    if (!response.ok) {
+        throw new Error("Szenarien konnten nicht geladen werden.");
+    }
+
+    return response.json();
 }
 
-export function getScenarios() {
-  return request("/scenarios");
+
+// ---------------------------------------------------------
+// Einzelnes Szenario laden
+// ---------------------------------------------------------
+
+export async function getScenarioById(id) {
+    const response = await fetch(
+        `${SCENARIO_API_URL}/${id}`,
+        {
+            credentials: "include"
+        }
+    );
+
+    if (!response.ok) {
+        throw new Error("Das Szenario konnte nicht geladen werden.");
+    }
+
+    return response.json();
 }
 
-export function getScenario(id) {
-  return request(`/scenarios/${id}`);
+
+// ---------------------------------------------------------
+// Neues Szenario erstellen
+// ---------------------------------------------------------
+
+export async function createScenario(scenario) {
+    const response = await fetch(SCENARIO_API_URL, {
+        method: "POST",
+
+        headers: {
+            "Content-Type": "application/json"
+        },
+
+        credentials: "include",
+
+        body: JSON.stringify(scenario)
+    });
+
+    if (!response.ok) {
+        throw new Error("Das Szenario konnte nicht erstellt werden.");
+    }
+
+    return response.json();
 }
 
-export function createScenario(scenario) {
-  return request("/scenarios", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(scenario)
-  });
+
+// ---------------------------------------------------------
+// Bestehendes Szenario aktualisieren
+// ---------------------------------------------------------
+
+export async function updateScenario(id, scenario) {
+    const response = await fetch(
+        `${SCENARIO_API_URL}/${id}`,
+        {
+            method: "PUT",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            credentials: "include",
+
+            body: JSON.stringify(scenario)
+        }
+    );
+
+    if (!response.ok) {
+        throw new Error("Das Szenario konnte nicht aktualisiert werden.");
+    }
+
+    return response.json();
 }
 
-export function updateScenario(id, scenario) {
-  return request(`/scenarios/${id}`, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(scenario)
-  });
-}
 
-export function deleteScenario(id) {
-  return request(`/scenarios/${id}`, {
-    method: "DELETE"
-  });
+// ---------------------------------------------------------
+// Szenario löschen
+// ---------------------------------------------------------
+
+export async function deleteScenario(id) {
+    const response = await fetch(
+        `${SCENARIO_API_URL}/${id}`,
+        {
+            method: "DELETE",
+            credentials: "include"
+        }
+    );
+
+    if (!response.ok) {
+        throw new Error("Das Szenario konnte nicht gelöscht werden.");
+    }
+
+    // DELETE kann je nach Backend eine JSON-Antwort oder
+    // eine leere Antwort zurückgeben.
+    if (response.status === 204) {
+        return null;
+    }
+
+    return response.json();
 }

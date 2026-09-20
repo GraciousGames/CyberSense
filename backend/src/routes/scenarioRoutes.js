@@ -7,104 +7,252 @@ import {
   findScenarioById,
   updateScenario
 } from "../repositories/scenarioRepository.js";
+
 import {
-  validateScenario
-} from "../validation/scenarioValidation.js";
+  requireAdmin
+} from "../middleware/authMiddleware.js";
+
 
 const router = Router();
 
-function parseScenarioId(value) {
-  const id = Number(value);
 
-  return Number.isInteger(id) && id > 0 ? id : null;
+// Zulässige Klassifikationen eines Trainingsszenarios.
+const allowedAnswers = [
+  "legitim",
+  "phishing"
+];
+
+
+// ---------------------------------------------------------
+// Szenariodaten validieren
+// ---------------------------------------------------------
+
+function validateScenario(request, response) {
+  const {
+    senderName,
+    senderEmail,
+    recipient,
+    subject,
+    date,
+    greeting,
+    paragraphs,
+    signature,
+    correctAnswer,
+    explanation,
+    clues
+  } = request.body;
+
+  // Pflichtfelder müssen vorhanden sein.
+  if (
+      !senderName ||
+      !senderEmail ||
+      !recipient ||
+      !subject ||
+      !date ||
+      !greeting ||
+      !signature ||
+      !correctAnswer ||
+      !explanation
+  ) {
+    response.status(400).json({
+      error: "Required scenario fields are missing."
+    });
+
+    return false;
+  }
+
+  // Absätze werden von der API immer als Array erwartet.
+  if (!Array.isArray(paragraphs)) {
+    response.status(400).json({
+      error: "Paragraphs must be an array."
+    });
+
+    return false;
+  }
+
+  // Ein Szenario darf nur legitim oder Phishing sein.
+  if (!allowedAnswers.includes(correctAnswer)) {
+    response.status(400).json({
+      error: "Invalid correct answer."
+    });
+
+    return false;
+  }
+
+  // Hinweise sind optional, müssen aber als Array vorliegen.
+  if (
+      clues !== undefined &&
+      !Array.isArray(clues)
+  ) {
+    response.status(400).json({
+      error: "Clues must be an array."
+    });
+
+    return false;
+  }
+
+  return true;
 }
 
-router.get("/", (request, response) => {
-  const scenarios = findAllScenarios();
 
-  response.status(200).json(scenarios);
-});
+// ---------------------------------------------------------
+// Szenario-ID aus der URL prüfen
+// ---------------------------------------------------------
 
-router.post("/", (request, response) => {
-  const errors = validateScenario(request.body);
+function parseScenarioId(request, response) {
+  const scenarioId =
+      Number(request.params.id);
 
-  if (errors.length > 0) {
-    return response.status(400).json({
-      message: "The scenario data is invalid.",
-      errors
+  if (
+      !Number.isInteger(scenarioId) ||
+      scenarioId <= 0
+  ) {
+    response.status(400).json({
+      error: "Invalid scenario ID."
     });
+
+    return null;
   }
 
-  const scenario = createScenario(request.body);
+  return scenarioId;
+}
 
-  return response.status(201).json(scenario);
+
+// ---------------------------------------------------------
+// GET /api/scenarios
+// Alle Szenarien laden
+// ---------------------------------------------------------
+
+router.get("/", (request, response) => {
+  const scenarios =
+      findAllScenarios();
+
+  return response.status(200).json(
+      scenarios
+  );
 });
+
+
+// ---------------------------------------------------------
+// POST /api/scenarios
+// Neues Szenario erstellen
+// ---------------------------------------------------------
+
+router.post(
+    "/",
+    requireAdmin,
+    (request, response) => {
+      if (!validateScenario(request, response)) {
+        return;
+      }
+
+      const newScenario =
+          createScenario(request.body);
+
+      return response.status(201).json(
+          newScenario
+      );
+    }
+);
+
+
+// ---------------------------------------------------------
+// PUT /api/scenarios/:id
+// Szenario bearbeiten
+// ---------------------------------------------------------
+
+router.put(
+    "/:id",
+    requireAdmin,
+    (request, response) => {
+      const scenarioId =
+          parseScenarioId(request, response);
+
+      if (scenarioId === null) {
+        return;
+      }
+
+      if (!validateScenario(request, response)) {
+        return;
+      }
+
+      const updatedScenario =
+          updateScenario(
+              scenarioId,
+              request.body
+          );
+
+      if (!updatedScenario) {
+        return response.status(404).json({
+          error: "Scenario not found."
+        });
+      }
+
+      return response.status(200).json(
+          updatedScenario
+      );
+    }
+);
+
+
+// ---------------------------------------------------------
+// DELETE /api/scenarios/:id
+// Szenario löschen
+// ---------------------------------------------------------
+
+router.delete(
+    "/:id",
+    requireAdmin,
+    (request, response) => {
+      const scenarioId =
+          parseScenarioId(request, response);
+
+      if (scenarioId === null) {
+        return;
+      }
+
+      const deleted =
+          deleteScenario(scenarioId);
+
+      if (!deleted) {
+        return response.status(404).json({
+          error: "Scenario not found."
+        });
+      }
+
+      return response.status(200).json({
+        message: "Scenario deleted successfully."
+      });
+    }
+);
+
+
+// ---------------------------------------------------------
+// GET /api/scenarios/:id
+// Einzelnes Szenario laden
+// ---------------------------------------------------------
 
 router.get("/:id", (request, response) => {
-  const scenarioId = parseScenarioId(request.params.id);
+  const scenarioId =
+      parseScenarioId(request, response);
 
-  if (!scenarioId) {
-    return response.status(400).json({
-      message: "The scenario ID is invalid."
-    });
+  if (scenarioId === null) {
+    return;
   }
 
-  const scenario = findScenarioById(scenarioId);
+  const scenario =
+      findScenarioById(scenarioId);
 
   if (!scenario) {
     return response.status(404).json({
-      message: "Scenario not found."
+      error: "Scenario not found."
     });
   }
 
-  return response.status(200).json(scenario);
+  return response.status(200).json(
+      scenario
+  );
 });
 
-router.put("/:id", (request, response) => {
-  const scenarioId = parseScenarioId(request.params.id);
-
-  if (!scenarioId) {
-    return response.status(400).json({
-      message: "The scenario ID is invalid."
-    });
-  }
-
-  const errors = validateScenario(request.body);
-
-  if (errors.length > 0) {
-    return response.status(400).json({
-      message: "The scenario data is invalid.",
-      errors
-    });
-  }
-
-  const scenario = updateScenario(scenarioId, request.body);
-
-  if (!scenario) {
-    return response.status(404).json({
-      message: "Scenario not found."
-    });
-  }
-
-  return response.status(200).json(scenario);
-});
-
-router.delete("/:id", (request, response) => {
-  const scenarioId = parseScenarioId(request.params.id);
-
-  if (!scenarioId) {
-    return response.status(400).json({
-      message: "The scenario ID is invalid."
-    });
-  }
-
-  if (!deleteScenario(scenarioId)) {
-    return response.status(404).json({
-      message: "Scenario not found."
-    });
-  }
-
-  return response.status(204).send();
-});
 
 export default router;

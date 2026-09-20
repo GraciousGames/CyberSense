@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { registerUser } from "../services/authService.js";
 
 function RegisterPage() {
   const [formData, setFormData] = useState({
@@ -21,7 +22,7 @@ function RegisterPage() {
     }));
   }
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
 
     setError("");
@@ -37,16 +38,24 @@ function RegisterPage() {
       return;
     }
 
-    setSuccess(
-      "Die Registrierung wurde testweise erfolgreich verarbeitet."
-    );
+    try {
+      await registerUser(
+          formData.username,
+          formData.email,
+          formData.password
+      );
 
-    setFormData({
-      username: "",
-      email: "",
-      password: "",
-      passwordConfirmation: ""
-    });
+      setSuccess("Registrierung erfolgreich.");
+
+      setFormData({
+        username: "",
+        email: "",
+        password: "",
+        passwordConfirmation: ""
+      });
+    } catch (error) {
+      setError(error.message);
+    }
   }
 
   return (
