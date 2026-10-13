@@ -1946,7 +1946,7 @@ Additional information about branches, commits, and pull requests is available i
 
 ## Educational Context
 
-CyberSense was developed exclusively for educational purposes as part of the **Web Programming** module in the B.Sc. Media Informatics program at **HAW Hamburg**.
+CyberSense was developed exclusively for educational purposes as part of a **Free Project** in the B.Sc. Media Informatics program at **HAW Hamburg**.
 
 All email messages used in CyberSense are prepared training scenarios.
 
