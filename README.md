@@ -4,7 +4,7 @@ CyberSense is an interactive full-stack web application for phishing awareness a
 
 The application presents users with realistic email scenarios. For each email, the user decides whether it is **legitimate** or **phishing**. After submitting an answer, CyberSense immediately explains whether the decision was correct and highlights indicators that can help identify phishing attempts.
 
-CyberSense was developed as part of the **Web Programming** module at **HAW Hamburg**.
+CyberSense was developed as part of a **Free Project** at **HAW Hamburg**.
 
 ---
 
@@ -14,7 +14,7 @@ CyberSense was developed as part of the **Web Programming** module at **HAW Hamb
 |---|---|
 | University | HAW Hamburg |
 | Degree program | Media Informatics (B.Sc.) |
-| Module | Web Programming |
+| Module | Free Project |
 | Lecturer | Stephanie Held |
 | Semester | Winter semester 2026/2027 |
 
