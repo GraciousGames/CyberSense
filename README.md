@@ -24,7 +24,7 @@ CyberSense was developed as part of a **Free Project** at **HAW Hamburg**.
 |---|---|
 | Grace Gehlisch | ****929 |
 | Clemens Lampen | ****938 |
-| Marcel Brauns | ****503 |
+| Marcel Brauns | ****503 | 
 
 ---
 
@@ -1265,7 +1265,7 @@ CONTRIBUTING.md
 
 # Educational Context
 
-CyberSense was developed exclusively for educational purposes as part of the **Web Programming** module in the B.Sc. Media Informatics program at **HAW Hamburg**.
+CyberSense was developed exclusively for educational purposes as part of a **Free Project** in the B.Sc. Media Informatics program at **HAW Hamburg**.
 
 The project demonstrates concepts including:
 
